@@ -1,0 +1,3 @@
+[submodule "libs/hana"]
+	path = libs/hana
+	url = https://github.com/boostorg/hana
