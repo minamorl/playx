@@ -1,5 +1,9 @@
 {
     "clang.cxxflags": [
-        "-I${workspaceRoot}/libs/hana/include"
-    ]
+        "-std=c++17",
+        "-I${workspaceRoot}/libs/hana/include",
+    ],
+    "files.associations": {
+        "qtgui": "cpp"
+    }
 }
