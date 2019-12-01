@@ -14,7 +14,10 @@ class painter_field : public QWidget {
     Q_OBJECT
 public:
     explicit painter_field(QWidget *parent = nullptr);
-    ~painter_field();
+    void createLayer(QImage image);
+    void setCurrentLayer(size_t pos);
+    QImage& getCurrentLayer();
+    size_t currentLayerPos = 0;
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -22,9 +25,11 @@ protected:
 
 private:
     void interpolate(QPainter& p);
+    void drawLayers();
     QPoint point;
     QPoint previous_point;
-    std::unique_ptr<QImage> image;
+    std::unique_ptr<QImage> base_image;
+    std::vector<QImage> images;
     std::unique_ptr<QLabel> target;
 };
 

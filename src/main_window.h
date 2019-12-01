@@ -13,7 +13,12 @@ class main_window : public QMainWindow {
 
 public:
     explicit main_window(QWidget *parent = nullptr);
-    virtual ~main_window();
+private slots:
+    void handleButton1();
+    void handleButton2();
+    void handleButton3();
+
+
 private:
     void setup();
     std::unique_ptr<QWidget> window;
