@@ -1,10 +1,9 @@
 #include <QApplication>
-#include <QLabel>
+#include <painter_widget.h>
 
 int main(int argc, char** argv) {
     QApplication app(argc, argv);
-    QLabel* label = new QLabel("This is the beginning of domination.");
-    label->resize(240, 120);
-    label->show();
+    playx::ui::main_window window;
+    window.show();
     return app.exec();
 }

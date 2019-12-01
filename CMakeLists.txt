@@ -14,7 +14,11 @@ find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
 project( playx )
 
-add_executable( binary ./src/main.cpp )
+# for Qt
+
+add_executable( binary ./src/main.cpp ./src/painter_widget.cpp )
+
+set_target_properties(binary PROPERTIES AUTOMOC TRUE)
 
 include_directories( ./include ./src ./libs/hana/include )
 
