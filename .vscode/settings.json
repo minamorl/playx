@@ -4,6 +4,7 @@
         "-I${workspaceRoot}/libs/hana/include",
     ],
     "files.associations": {
-        "qtgui": "cpp"
+        "qtgui": "cpp",
+        "qhboxlayout": "cpp"
     }
 }

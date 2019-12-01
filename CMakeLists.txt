@@ -16,7 +16,10 @@ project( playx )
 
 # for Qt
 
-add_executable( binary ./src/main.cpp ./src/painter_widget.cpp )
+add_executable( binary
+    ./src/main.cpp
+    ./src/painter_widget.cpp 
+    ./src/main_window.cpp)
 
 set_target_properties(binary PROPERTIES AUTOMOC TRUE)
 
