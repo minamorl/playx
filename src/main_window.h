@@ -16,7 +16,9 @@ public:
     virtual ~main_window();
 private:
     void setup();
-    std::unique_ptr<main_window> ui;
+    std::unique_ptr<QWidget> window;
+    std::unique_ptr<QHBoxLayout> layout;
+    std::unique_ptr<painter_field> pf;
 };
 
 }

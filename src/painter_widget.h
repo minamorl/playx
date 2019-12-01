@@ -22,9 +22,8 @@ protected:
 
 private:
     QPoint point;
-    QPainter *painter;
-    QImage *image;
-    QLabel *target;
+    std::unique_ptr<QImage> image;
+    std::unique_ptr<QLabel> target;
 };
 
-};
+}

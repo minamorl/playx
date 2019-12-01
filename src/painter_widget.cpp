@@ -9,16 +9,16 @@ namespace playx::ui {
 painter_field::painter_field(QWidget *parent) :
     QWidget(parent)
 {
-    image = new QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied);
-    target = new QLabel(this);
+    image = std::make_unique<QImage>(720, 405, QImage::Format::Format_A2BGR30_Premultiplied);
+    target = std::make_unique<QLabel>(this);
     target->setFixedSize(720, 405);
     target->setPixmap(QPixmap::fromImage(*image));
     target->show();
 }
 
-void painter_field::paintEvent(QPaintEvent *event)
+void painter_field::paintEvent(QPaintEvent*)
 {
-    QPainter p(image);
+    QPainter p(image.get());
     p.setRenderHint(QPainter::Antialiasing, true);
     p.setPen(Qt::NoPen);
     p.setBrush(QColor(0, 0, 0));
@@ -31,7 +31,7 @@ void painter_field::mouseMoveEvent(QMouseEvent *event)
     point = event->pos();
     update();
 
-    qDebug() << point;
+    // qDebug() << point;
 }
 
 painter_field::~painter_field()

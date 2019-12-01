@@ -4,19 +4,19 @@
 namespace playx::ui {
 
 main_window::main_window(QWidget *parent) :
-    QMainWindow(parent),
-    ui(this)
+    QMainWindow(parent)
 {
     setup();
 }
 
 void main_window::setup()
 {
-    auto window = new QWidget;
-    auto layout = new QHBoxLayout;
-    layout->addWidget(new painter_field);
-    window->setLayout(layout);
-    setCentralWidget(window);
+    window = std::make_unique<QWidget>();
+    layout = std::make_unique<QHBoxLayout>();
+    pf = std::make_unique<painter_field>();
+    layout->addWidget(pf.get());
+    window->setLayout(layout.get());
+    setCentralWidget(window.get());
 }
 
 main_window::~main_window()
