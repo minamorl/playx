@@ -21,7 +21,9 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
 
 private:
+    void interpolate(QPainter& p);
     QPoint point;
+    QPoint previous_point;
     std::unique_ptr<QImage> image;
     std::unique_ptr<QLabel> target;
 };
