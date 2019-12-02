@@ -5,6 +5,7 @@
 #include <memory>
 #include <QMainWindow>
 #include <QHBoxLayout>
+#include <QGridLayout>
 
 namespace playx::ui {
 
@@ -23,7 +24,7 @@ private slots:
 private:
     void setup();
     std::unique_ptr<QWidget> window;
-    std::unique_ptr<QHBoxLayout> layout;
+    std::unique_ptr<QGridLayout> layout;
     std::unique_ptr<QVBoxLayout> sidebar_layout;
     std::unique_ptr<painter_field> pf;
 };

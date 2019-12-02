@@ -1,6 +1,7 @@
 #include <main_window.h>
-#include <QHBoxLayout>
+#include <QGridLayout>
 #include <QPushButton>
+#include <timeline_widget.h>
 
 namespace playx::ui {
 
@@ -13,9 +14,10 @@ main_window::main_window(QWidget *parent) :
 void main_window::setup()
 {
     window = std::make_unique<QWidget>();
-    layout = std::make_unique<QHBoxLayout>();
+    
+    layout = std::make_unique<QGridLayout>();
     pf = std::make_unique<painter_field>();
-    layout->addWidget(pf.get());
+    layout->addWidget(pf.get(), 0, 0);
 
     sidebar_layout = std::make_unique<QVBoxLayout>();
 
@@ -31,8 +33,10 @@ void main_window::setup()
     connect(button3, SIGNAL (released()), this, SLOT (handleButton3()));
     sidebar_layout->addWidget(button3);
 
-    layout->addLayout(sidebar_layout.get());
+    layout->addLayout(sidebar_layout.get(), 0, 1);
     
+    layout->addWidget(new timeline_widget, 1,0);
+
     window->setLayout(layout.get());
     setCentralWidget(window.get());
 }

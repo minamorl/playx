@@ -67,7 +67,8 @@
         "variant": "cpp",
         "qapplication": "cpp",
         "qimage": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "qwidget": "cpp"
     },
     "files.watcherExclude": {
         "**/.git/objects/**": true,

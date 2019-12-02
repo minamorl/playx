@@ -22,7 +22,8 @@ add_executable( binary
     ./src/painter_widget.cpp
     ./src/main_window.cpp
     ./src/layer.cpp
-    ./src/timeline.cpp)
+    ./src/timeline.cpp
+    ./src/timeline_widget.cpp)
 
 set_target_properties(binary PROPERTIES AUTOMOC TRUE)
 
