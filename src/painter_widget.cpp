@@ -23,17 +23,14 @@ painter_field::painter_field(QWidget *parent) :
         QPainter painter(base_image.get());
         painter.drawImage(QPoint(0, 0), x.get_image());
     }
-
-    target = std::make_unique<QLabel>(this);
-    target->setFixedSize(720, 405);
-    target->setPixmap(QPixmap::fromImage(*base_image.get()));
-    target->show();
 }
 
 void painter_field::createLayer(QImage image)
 {
     layers.push_back(playx::core::layer(image, layers.size() - 1));
     currentLayerPos = layers.size() - 1;
+    prevent_from_drawing = true;
+    update();
 }
 
 void painter_field::setCurrentLayer(size_t pos)
@@ -51,16 +48,22 @@ playx::core::layer& painter_field::getCurrentLayer()
     }
 }
 
+void painter_field::drawBaseImage()
+{
+    QPainter painter(this);
+    painter.drawImage(QPoint(0, 0), *base_image.get());
+}
+
 void painter_field::drawLayers()
 {
     QPainter painter(base_image.get());
     base_image->fill(Qt::GlobalColor::transparent);
     for (auto &x : layers) {
-        if (x.get_visibility_style() == playx::core::visibility_state::VISIBLE) {
+        if (x.get_visibility_style()) {
             painter.drawImage(QPoint(0, 0), x.get_image());
         }
     }
-    target->setPixmap(QPixmap::fromImage(*base_image.get()));
+    drawBaseImage();
 }
 
 void painter_field::interpolate(QPainter& p)
@@ -107,7 +110,8 @@ void painter_field::interpolate(QPainter& p)
 
 void painter_field::paintEvent(QPaintEvent*)
 {
-    if (!is_left_button_clicked) {
+    if (prevent_from_drawing) {
+        drawLayers();
         return;
     }
     auto& image = getCurrentLayer().get_image();
@@ -128,7 +132,12 @@ void painter_field::mouseMoveEvent(QMouseEvent *event)
 }
 void painter_field::mousePressEvent(QMouseEvent *event)
 {
-    is_left_button_clicked = event->button() == Qt::MouseButton::LeftButton;
+    if (event->button() != Qt::MouseButton::LeftButton) {
+        prevent_from_drawing = true;
+    } else {
+        prevent_from_drawing = false;
+    }
+    
     point = event->pos();
     previous_point = point;
 }

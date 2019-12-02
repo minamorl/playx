@@ -29,12 +29,12 @@ protected:
 private:
     void interpolate(QPainter& p);
     void drawLayers();
+    void drawBaseImage();
     QPoint point;
     QPoint previous_point;
     std::unique_ptr<QImage> base_image;
     std::vector<playx::core::layer> layers;
-    std::unique_ptr<QLabel> target;
-    bool is_left_button_clicked = false;
+    bool prevent_from_drawing = true;
 };
 
 }
