@@ -20,7 +20,8 @@ project( playx )
 add_executable( binary
     ./src/main.cpp
     ./src/painter_widget.cpp 
-    ./src/main_window.cpp)
+    ./src/main_window.cpp
+    ./src/layer.cpp)
 
 set_target_properties(binary PROPERTIES AUTOMOC TRUE)
 

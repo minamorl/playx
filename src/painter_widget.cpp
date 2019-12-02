@@ -17,12 +17,11 @@ painter_field::painter_field(QWidget *parent) :
     QWidget(parent)
 {
     base_image = std::make_unique<QImage>(720, 405, QImage::Format::Format_A2BGR30_Premultiplied);
-    images.push_back(QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied));
+    layers.push_back(playx::core::layer(QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), 0));
 
-    for (auto const &x : images) {
-        auto pixmap = QPixmap::fromImage(x);
+    for (auto &x : layers) {
         QPainter painter(base_image.get());
-        painter.drawImage(QPoint(0, 0), x);
+        painter.drawImage(QPoint(0, 0), x.get_image());
     }
 
     target = std::make_unique<QLabel>(this);
@@ -33,8 +32,8 @@ painter_field::painter_field(QWidget *parent) :
 
 void painter_field::createLayer(QImage image)
 {
-    images.push_back(image);
-    currentLayerPos = images.size() - 1;
+    layers.push_back(playx::core::layer(image, layers.size() - 1));
+    currentLayerPos = layers.size() - 1;
 }
 
 void painter_field::setCurrentLayer(size_t pos)
@@ -42,13 +41,13 @@ void painter_field::setCurrentLayer(size_t pos)
     currentLayerPos = pos;
 }
 
-QImage& painter_field::getCurrentLayer()
+playx::core::layer& painter_field::getCurrentLayer()
 {
     try {
-        return images.at(currentLayerPos);
+        return layers.at(currentLayerPos);
     } catch (std::out_of_range& ex) {
         currentLayerPos = 0;
-        return images.at(currentLayerPos);
+        return layers.at(currentLayerPos);
     }
 }
 
@@ -56,9 +55,10 @@ void painter_field::drawLayers()
 {
     QPainter painter(base_image.get());
     base_image->fill(Qt::GlobalColor::transparent);
-    for (auto const &x : images) {
-        auto pixmap = QPixmap::fromImage(x);
-        painter.drawImage(QPoint(0, 0), x);
+    for (auto &x : layers) {
+        if (x.get_visibility_style() == playx::core::visibility_state::VISIBLE) {
+            painter.drawImage(QPoint(0, 0), x.get_image());
+        }
     }
     target->setPixmap(QPixmap::fromImage(*base_image.get()));
 }
@@ -110,8 +110,8 @@ void painter_field::paintEvent(QPaintEvent*)
     if (!is_left_button_clicked) {
         return;
     }
-    auto& currentLayer = getCurrentLayer();
-    QPainter p(&currentLayer);
+    auto& image = getCurrentLayer().get_image();
+    QPainter p(&image);
     p.setRenderHint(QPainter::Antialiasing, true);
     p.setPen(Qt::NoPen);
     p.setBrush(QColor(255, 0, 0));

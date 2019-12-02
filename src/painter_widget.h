@@ -1,5 +1,6 @@
 #pragma once
 
+#include<layer.h>
 #include<memory>
 #include<QWidget>
 #include<QtGui/QPainter>
@@ -16,7 +17,7 @@ public:
     explicit painter_field(QWidget *parent = nullptr);
     void createLayer(QImage image);
     void setCurrentLayer(size_t pos);
-    QImage& getCurrentLayer();
+    playx::core::layer& getCurrentLayer();
     size_t currentLayerPos = 0;
     QSize minimumSizeHint() const;
 
@@ -31,7 +32,7 @@ private:
     QPoint point;
     QPoint previous_point;
     std::unique_ptr<QImage> base_image;
-    std::vector<QImage> images;
+    std::vector<playx::core::layer> layers;
     std::unique_ptr<QLabel> target;
     bool is_left_button_clicked = false;
 };
