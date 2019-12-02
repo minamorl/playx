@@ -13,6 +13,7 @@ class main_window : public QMainWindow {
 
 public:
     explicit main_window(QWidget *parent = nullptr);
+
 private slots:
     void handleButton1();
     void handleButton2();

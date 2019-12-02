@@ -18,6 +18,7 @@ public:
     void setCurrentLayer(size_t pos);
     QImage& getCurrentLayer();
     size_t currentLayerPos = 0;
+    QSize minimumSizeHint() const;
 
 protected:
     void paintEvent(QPaintEvent *event);

@@ -7,6 +7,12 @@
 
 namespace playx::ui {
 
+QSize painter_field::minimumSizeHint() const
+{
+    return QSize(720, 405);
+}
+
+
 painter_field::painter_field(QWidget *parent) :
     QWidget(parent)
 {
@@ -85,8 +91,16 @@ void painter_field::interpolate(QPainter& p)
         return;
     } else {
         auto const x_unit = x_diff / std::abs(x_diff);
-        for (int i = 0; std::abs(i) < std::abs(x_diff); i += x_unit) {
-            p.drawEllipse(QPointF(x + i, slope * (x + i) + intercept), 4, 4);
+        auto const y_unit = y_diff / std::abs(y_diff);
+        auto const is_x_diff_longer_than_y_diff = std::abs(x_diff) > std::abs(y_diff);
+        if (is_x_diff_longer_than_y_diff) {
+            for (int i = 0; std::abs(i) < std::abs(x_diff); i += x_unit) {
+                p.drawEllipse(QPointF(x + i, slope * (x + i) + intercept), 4, 4);
+            }
+        } else {
+             for (int i = 0; std::abs(i) < std::abs(y_diff); i += y_unit) {
+                p.drawEllipse(QPointF(((y + i) - intercept) / slope, y + i), 4, 4);
+            }
         }
     }
 }

@@ -64,7 +64,8 @@
         "cinttypes": "cpp",
         "typeindex": "cpp",
         "typeinfo": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "qapplication": "cpp"
     },
     "files.watcherExclude": {
         "**/.git/objects/**": true,
