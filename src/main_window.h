@@ -1,11 +1,13 @@
 #pragma once
 
+#include <layer.h>
 #include <painter_widget.h>
-
+#include <vector>
 #include <memory>
 #include <QMainWindow>
 #include <QHBoxLayout>
 #include <QGridLayout>
+#include <application_state.h>
 
 namespace playx::ui {
 
@@ -23,6 +25,8 @@ private slots:
 
 private:
     void setup();
+
+    std::shared_ptr<playx::core::application_state> app_state;    
     std::unique_ptr<QWidget> window;
     std::unique_ptr<QGridLayout> layout;
     std::unique_ptr<QVBoxLayout> sidebar_layout;

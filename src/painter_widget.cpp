@@ -17,18 +17,19 @@ painter_field::painter_field(QWidget *parent) :
     QWidget(parent)
 {
     base_image = std::make_unique<QImage>(720, 405, QImage::Format::Format_A2BGR30_Premultiplied);
-    layers.push_back(playx::core::layer(QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), 0));
-
-    for (auto &x : layers) {
-        QPainter painter(base_image.get());
-        painter.drawImage(QPoint(0, 0), x.get_image());
-    }
 }
+
+void painter_field::set_application_state(std::shared_ptr<playx::core::application_state> app_state)
+{
+    _app_state = app_state;
+    _app_state->get_layer_container().push_back(playx::core::layer(QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), 0));
+}
+
 
 void painter_field::createLayer(QImage image)
 {
-    layers.push_back(playx::core::layer(image, layers.size() - 1));
-    currentLayerPos = layers.size() - 1;
+    _app_state->get_layer_container().push_back(playx::core::layer(image, _app_state->get_layer_container().size() - 1));
+    currentLayerPos = _app_state->get_layer_container().size() - 1;
     prevent_from_drawing = true;
     update();
 }
@@ -41,10 +42,10 @@ void painter_field::setCurrentLayer(size_t pos)
 playx::core::layer& painter_field::getCurrentLayer()
 {
     try {
-        return layers.at(currentLayerPos);
+        return _app_state->get_layer_container().at(currentLayerPos);
     } catch (std::out_of_range& ex) {
         currentLayerPos = 0;
-        return layers.at(currentLayerPos);
+        return _app_state->get_layer_container().at(currentLayerPos);
     }
 }
 
@@ -58,7 +59,7 @@ void painter_field::drawLayers()
 {
     QPainter painter(base_image.get());
     base_image->fill(Qt::GlobalColor::transparent);
-    for (auto &x : layers) {
+    for (auto &x : _app_state->get_layer_container()) {
         if (x.get_visibility_style()) {
             painter.drawImage(QPoint(0, 0), x.get_image());
         }
@@ -108,6 +109,11 @@ void painter_field::interpolate(QPainter& p)
     }
 }
 
+void painter_field::receiveChange()
+{
+    update();
+}
+
 void painter_field::paintEvent(QPaintEvent*)
 {
     if (prevent_from_drawing) {
@@ -137,7 +143,6 @@ void painter_field::mousePressEvent(QMouseEvent *event)
     } else {
         prevent_from_drawing = false;
     }
-    
     point = event->pos();
     previous_point = point;
 }

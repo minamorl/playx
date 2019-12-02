@@ -23,7 +23,8 @@ add_executable( binary
     ./src/main_window.cpp
     ./src/layer.cpp
     ./src/timeline.cpp
-    ./src/timeline_widget.cpp)
+    ./src/timeline_widget.cpp
+    ./src/application_state.cpp)
 
 set_target_properties(binary PROPERTIES AUTOMOC TRUE)
 

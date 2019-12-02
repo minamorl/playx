@@ -68,7 +68,8 @@
         "qapplication": "cpp",
         "qimage": "cpp",
         "iomanip": "cpp",
-        "qwidget": "cpp"
+        "qwidget": "cpp",
+        "qmainwindow": "cpp"
     },
     "files.watcherExclude": {
         "**/.git/objects/**": true,

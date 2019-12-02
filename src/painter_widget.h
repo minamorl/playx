@@ -7,6 +7,7 @@
 #include<QMainWindow>
 #include<QGraphicsView>
 #include<QLabel>
+#include <application_state.h>
 
 namespace playx::ui {
 
@@ -15,12 +16,18 @@ class painter_field : public QWidget {
     Q_OBJECT
 public:
     explicit painter_field(QWidget *parent = nullptr);
+    
+    void set_application_state(std::shared_ptr<playx::core::application_state> app_state);
     void createLayer(QImage image);
     void setCurrentLayer(size_t pos);
     playx::core::layer& getCurrentLayer();
     size_t currentLayerPos = 0;
     QSize minimumSizeHint() const;
 
+signals:
+    void changeLayerState();
+public slots:
+    void receiveChange();
 protected:
     void paintEvent(QPaintEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
@@ -35,6 +42,7 @@ private:
     std::unique_ptr<QImage> base_image;
     std::vector<playx::core::layer> layers;
     bool prevent_from_drawing = true;
+    std::shared_ptr<playx::core::application_state> _app_state;
 };
 
 }
