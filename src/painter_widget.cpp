@@ -93,6 +93,9 @@ void painter_field::interpolate(QPainter& p)
 
 void painter_field::paintEvent(QPaintEvent*)
 {
+    if (!is_left_button_clicked) {
+        return;
+    }
     auto& currentLayer = getCurrentLayer();
     QPainter p(&currentLayer);
     p.setRenderHint(QPainter::Antialiasing, true);
@@ -108,8 +111,12 @@ void painter_field::mouseMoveEvent(QMouseEvent *event)
     previous_point = point;
     point = event->pos();
     update();
-
-    // qDebug() << point;
+}
+void painter_field::mousePressEvent(QMouseEvent *event)
+{
+    is_left_button_clicked = event->button() == Qt::MouseButton::LeftButton;
+    point = event->pos();
+    previous_point = point;
 }
 
 }

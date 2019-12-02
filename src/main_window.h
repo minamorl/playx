@@ -23,6 +23,7 @@ private:
     void setup();
     std::unique_ptr<QWidget> window;
     std::unique_ptr<QHBoxLayout> layout;
+    std::unique_ptr<QVBoxLayout> sidebar_layout;
     std::unique_ptr<painter_field> pf;
 };
 

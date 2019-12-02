@@ -16,19 +16,23 @@ void main_window::setup()
     layout = std::make_unique<QHBoxLayout>();
     pf = std::make_unique<painter_field>();
     layout->addWidget(pf.get());
-    
+
+    sidebar_layout = std::make_unique<QVBoxLayout>();
+
     auto button1 = new QPushButton("+layer");
     connect(button1, SIGNAL (released()), this, SLOT (handleButton1()));
-    layout->addWidget(button1);
+    sidebar_layout->addWidget(button1);
 
     auto button2 = new QPushButton("up");
     connect(button2, SIGNAL (released()), this, SLOT (handleButton2()));
-    layout->addWidget(button2);
+    sidebar_layout->addWidget(button2);
 
     auto button3 = new QPushButton("down");
     connect(button3, SIGNAL (released()), this, SLOT (handleButton3()));
-    layout->addWidget(button3);
+    sidebar_layout->addWidget(button3);
 
+    layout->addLayout(sidebar_layout.get());
+    
     window->setLayout(layout.get());
     setCentralWidget(window.get());
 }

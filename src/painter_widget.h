@@ -22,6 +22,7 @@ public:
 protected:
     void paintEvent(QPaintEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
 
 private:
     void interpolate(QPainter& p);
@@ -31,6 +32,7 @@ private:
     std::unique_ptr<QImage> base_image;
     std::vector<QImage> images;
     std::unique_ptr<QLabel> target;
+    bool is_left_button_clicked = false;
 };
 
 }
