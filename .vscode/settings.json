@@ -69,7 +69,8 @@
         "qimage": "cpp",
         "iomanip": "cpp",
         "qwidget": "cpp",
-        "qmainwindow": "cpp"
+        "qmainwindow": "cpp",
+        "complex": "cpp"
     },
     "files.watcherExclude": {
         "**/.git/objects/**": true,

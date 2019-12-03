@@ -3,13 +3,16 @@
 #include <QPushButton>
 #include <timeline_widget.h>
 #include <application_state.h>
-
+#include <timeline.h>
 namespace playx::ui {
 
 main_window::main_window(QWidget *parent) :
     QMainWindow(parent)
 {
     setup();
+
+    playx::core::timeline tl;
+    tl.getCurrentLayers(playx::core::frame(1));
 }
 
 void main_window::setup()
