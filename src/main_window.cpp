@@ -14,7 +14,7 @@ main_window::main_window(QWidget *parent) :
     setup();
 
     playx::core::timeline tl;
-    tl.get_current_layers(playx::core::frame(1));
+    tl.get_current_layers(playx::core::unit_frame(1));
 }
 
 void main_window::setup()
