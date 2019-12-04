@@ -1,6 +1,11 @@
 #include "unit_frame.h"
+#include "layer_container.h"
 
 namespace playx::core {
+
+unit_frame::unit_frame(unit_frame const& u) : index_(u.index_)
+{
+}
 
 uint32_t unit_frame::get_index() const
 {
@@ -13,11 +18,21 @@ void unit_frame::set_index(uint32_t frame)
 }
 
 bool unit_frame::operator==(unit_frame const& other) const noexcept {
-    return index_ == other.get_index();
+    return index_ == other.index_;
 }
 
 bool unit_frame::operator<(unit_frame const& other) const noexcept {
     return index_ < other.get_index();
+}
+
+unit_frame& unit_frame::operator++() {
+    index_++;
+    return *this;
+}
+
+unit_frame& unit_frame::operator--() {
+    index_--;
+    return *this;
 }
 
 std::ostream& operator<<(std::ostream& os, const unit_frame& f)

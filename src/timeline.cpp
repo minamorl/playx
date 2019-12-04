@@ -14,15 +14,9 @@ timeline::timeline() : imap_() {}
 
 std::vector<layer> timeline::get_current_layers(unit_frame f)
 {
-    f = unit_frame();
+    f = unit_frame(5);
     using interval_type = boost::icl::interval<unit_frame>;
-    layer l1(unit_frame(0), unit_frame(1));
-    layer l2(unit_frame(1), unit_frame(2));
-    layer l3(unit_frame(2), unit_frame(3));
     
-    imap_ += std::make_pair(
-        l1.get_interval(),
-        playx::core::layer_container(std::vector<layer>{l1}));
     imap_ += std::make_pair(
         interval_type::right_open(unit_frame(0), unit_frame(3)),
         playx::core::layer_container(std::vector<layer>{layer()}));
@@ -34,6 +28,10 @@ std::vector<layer> timeline::get_current_layers(unit_frame f)
         playx::core::layer_container(std::vector<layer>{layer()}));
 
     std::cout << imap_ << std::endl;
+
+    auto x = imap_.find(interval_type::closed(unit_frame(7), unit_frame(7)));
+    playx::core::layer_container b = x->second;
+    std::cout << b << std::endl;
     return std::vector<layer>();
 }
 

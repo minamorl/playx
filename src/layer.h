@@ -22,7 +22,7 @@ public:
     void set_visibility_style(bool state);
     QImage& get_image();
     void set_image(QImage image);
-    boost::icl::continuous_interval<unit_frame> get_interval() const;
+    boost::icl::discrete_interval<unit_frame> get_interval() const;
 
 private:
     QImage image_;

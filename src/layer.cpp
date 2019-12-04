@@ -40,7 +40,7 @@ void layer::set_image(QImage image)
     this->image_ = image;
 }
 
-boost::icl::continuous_interval<unit_frame> layer::get_interval() const {
+boost::icl::discrete_interval<unit_frame> layer::get_interval() const {
     auto interval = boost::icl::interval<unit_frame>::right_open(start_, end_);
     return interval;
 }

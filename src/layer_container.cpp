@@ -4,40 +4,38 @@
 
 namespace playx::core {
 
-layer_container::layer_container() : v_{}
-{}
-
 layer_container::layer_container(std::vector<layer> v) : v_(v)
-{}
+{
+}
 
-std::vector<layer> layer_container::getLayers() const
+std::vector<layer> layer_container::get_layers() const
 {
     return v_;
 }
 
-void layer_container::setLayers(std::vector<layer> v)
+void layer_container::set_layers(std::vector<layer> v)
 {
     v_ = v;
 }
 
 layer_container& layer_container::operator+=(layer_container const& other)
 {
+    std::cout << "operator+=" << std::endl;
     std::cout << v_.size() << std::endl;
-    std::cout << other.getLayers().size() << std::endl;
-    auto other_layer = other.getLayers();
+    std::cout << other.v_.size() << std::endl;
+    auto other_layer = other.v_;
     v_.insert(v_.end(), other_layer.begin(), other_layer.end());
     return *this;
 }
-
 bool layer_container::operator==(layer_container const& other) const
 {
-    return v_ == other.getLayers();
+    return v_ == other.v_;
 }
-std::ostream& operator<<(std::ostream& os, const layer_container& lc)
+std::ostream& operator<<(std::ostream& os, layer_container const& lc)
 {
     os << "[";
-    for (uint i = 0; i < lc.getLayers().size(); i++) {
-        os << "image" << i << ",";
+    for (auto it = lc.v_.begin(); it != lc.v_.end(); ++it) {
+        os << "image" << ",";
     }
     os << "]";
     return os;
