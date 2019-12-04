@@ -1,13 +1,15 @@
 #pragma once
 
-#include <layer.h>
-#include <painter_widget.h>
-#include <vector>
-#include <memory>
+#include "application_state.h"
+#include "layer.h"
+#include "painter_widget.h"
+
 #include <QMainWindow>
 #include <QHBoxLayout>
 #include <QGridLayout>
-#include <application_state.h>
+
+#include <vector>
+#include <memory>
 
 namespace playx::ui {
 

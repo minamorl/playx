@@ -1,8 +1,9 @@
 #pragma once
 
-#include <layer.h>
+#include "layer.h"
+
 #include <vector>
-#include <iostream>
+#include <iosfwd>
 
 namespace playx::core {
 
@@ -19,7 +20,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const layer_container& lc);
 
 private:
-    std::vector<layer> _v;
+    std::vector<layer> v_;
 };
 
 }

@@ -37,12 +37,12 @@ private:
     void interpolate(QPainter& p);
     void drawLayers();
     void drawBaseImage();
-    QPoint point;
-    QPoint previous_point;
-    std::unique_ptr<QImage> base_image;
-    std::vector<playx::core::layer> layers;
-    bool prevent_from_drawing = true;
-    std::shared_ptr<playx::core::application_state> _app_state;
+    QPoint point_;
+    QPoint previous_point_;
+    std::unique_ptr<QImage> base_image_;
+    std::vector<playx::core::layer> layers_;
+    bool prevent_from_drawing_ = true;
+    std::shared_ptr<playx::core::application_state> app_state_;
 };
 
 }

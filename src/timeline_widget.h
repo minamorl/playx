@@ -1,10 +1,10 @@
 #pragma once
 
+#include "application_state.h"
+
 #include <QWidget>
 #include <QGridLayout>
 #include <memory>
-#include <application_state.h>
-
 
 namespace playx::ui {
 
@@ -25,9 +25,9 @@ protected:
     void mousePressEvent(QMouseEvent *event);
 private:
     void switchBgColor();
-    bool is_selected = true;
-    int _id;
-    std::shared_ptr<playx::core::application_state> _app_state;
+    bool is_selected_ = true;
+    int id_;
+    std::shared_ptr<playx::core::application_state> app_state_;
 };
 
 class timeline_widget : public QWidget {
@@ -46,9 +46,9 @@ public slots:
 private:
     void render_widget();
 
-    std::shared_ptr<playx::core::application_state> _app_state;
-    std::vector<timeline_cell*> cells;
-    std::unique_ptr<QGridLayout> layout;
+    std::shared_ptr<playx::core::application_state> app_state_;
+    std::vector<timeline_cell*> cells_;
+    std::unique_ptr<QGridLayout> layout_;
 };
 
 

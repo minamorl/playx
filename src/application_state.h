@@ -1,8 +1,9 @@
 #pragma once
 
+#include "layer.h"
+
 #include <memory>
 #include <vector>
-#include <layer.h>
 
 namespace playx::core {
 
@@ -12,7 +13,7 @@ public:
     std::vector<layer>& get_layer_container();
     void set_layer_container(std::vector<layer> layer_container);
 private:
-    std::vector<layer> _layer_container;
+    std::vector<layer> layer_container_;
 };
 
 }

@@ -1,9 +1,11 @@
-#include <main_window.h>
+#include "main_window.h"
+#include "timeline_widget.h"
+#include "application_state.h"
+#include "timeline.h"
+
 #include <QGridLayout>
 #include <QPushButton>
-#include <timeline_widget.h>
-#include <application_state.h>
-#include <timeline.h>
+
 namespace playx::ui {
 
 main_window::main_window(QWidget *parent) :

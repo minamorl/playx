@@ -1,36 +1,37 @@
-#include <layer_container.h>
+#include "layer_container.h"
+
 #include <iostream>
 
 namespace playx::core {
 
-layer_container::layer_container() : _v{}
+layer_container::layer_container() : v_{}
 {}
 
-layer_container::layer_container(std::vector<layer> v) : _v(v)
+layer_container::layer_container(std::vector<layer> v) : v_(v)
 {}
 
 std::vector<layer> layer_container::getLayers() const
 {
-    return _v;
+    return v_;
 }
 
 void layer_container::setLayers(std::vector<layer> v)
 {
-    _v = v;
+    v_ = v;
 }
 
 layer_container& layer_container::operator+=(layer_container const& other)
 {
-    std::cout << _v.size() << std::endl;
+    std::cout << v_.size() << std::endl;
     std::cout << other.getLayers().size() << std::endl;
     auto other_layer = other.getLayers();
-    _v.insert(_v.end(), other_layer.begin(), other_layer.end());
+    v_.insert(v_.end(), other_layer.begin(), other_layer.end());
     return *this;
 }
 
 bool layer_container::operator==(layer_container const& other) const
 {
-    return _v == other.getLayers();
+    return v_ == other.getLayers();
 }
 std::ostream& operator<<(std::ostream& os, const layer_container& lc)
 {
