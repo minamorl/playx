@@ -1,35 +1,36 @@
 #pragma once
 
-#include <cstdint>
-#include <layer.h>
-#include <layer_container.h>
+#include "layer.h"
+#include "layer_container.h"
 
 #include <boost/icl/split_interval_map.hpp>
-#include <boost/icl/right_open_interval.hpp>
+
+#include <cstdint>
+#include <iosfwd>
 
 namespace playx::core {
 
 class frame {
 public:
-    frame(uint32_t frame);
-    frame();
-    bool operator==(frame const& other) const;
-    bool operator<(frame const& other) const;
-    uint32_t get_frame() const;
-    void set_frame(uint32_t frame);
+    explicit frame(uint32_t frame) : index_(frame) {}
+    frame() = default;
+    bool operator==(frame const& other) const noexcept;
+    bool operator<(frame const& other) const noexcept;
+    uint32_t get_index() const;
+    void set_index(uint32_t frame);
     friend std::ostream& operator<<(std::ostream& os, const frame& f);
 
 private:
-    uint32_t _frame;
+    uint32_t index_;
 };
 
 class timeline {
 public:
     timeline();
-    std::vector<layer> getCurrentLayers(frame f);
+    std::vector<layer> get_current_layers(frame f);
 
 private:
-    boost::icl::split_interval_map<frame, layer_container> _imap;
+    boost::icl::split_interval_map<frame, layer_container> imap_;
 };
 
 }

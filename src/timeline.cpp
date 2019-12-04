@@ -1,57 +1,54 @@
-#include <vector>
 #include <timeline.h>
 #include <layer_container.h>
 #include <boost/icl/interval_map.hpp>
 #include <boost/icl/right_open_interval.hpp>
 #include <iostream>
+#include <vector>
+
 
 namespace playx::core {
 
-frame::frame(uint32_t frame) : _frame(frame) {}
-
-frame::frame() : _frame(0) {}
-
-uint32_t frame::get_frame() const
+uint32_t frame::get_index() const
 {
-    return _frame;
+    return index_;
 }
 
-void frame::set_frame(uint32_t frame)
+void frame::set_index(uint32_t frame)
 {
-    _frame = frame;
+    index_ = frame;
 }
 
-bool frame::operator==(frame const& other) const {
-    return _frame == other.get_frame();
+bool frame::operator==(frame const& other) const noexcept {
+    return index_ == other.get_index();
 }
 
-bool frame::operator<(frame const& other) const {
-    return _frame < other.get_frame();
+bool frame::operator<(frame const& other) const noexcept {
+    return index_ < other.get_index();
 }
 
 std::ostream& operator<<(std::ostream& os, const frame& f)
 {
-    os << f.get_frame();
+    os << f.get_index();
     return os;
 }
 
-timeline::timeline() : _imap() {}
+timeline::timeline() : imap_() {}
 
-std::vector<layer> timeline::getCurrentLayers(frame f)
+std::vector<layer> timeline::get_current_layers(frame f)
 {
     f = frame();
     using interval_type = boost::icl::interval<frame>;
-    _imap += std::make_pair(
+    imap_ += std::make_pair(
         interval_type::right_open(frame(0), frame(1)),
         playx::core::layer_container(std::vector<layer>{layer()}));
-    _imap += std::make_pair(
+    imap_ += std::make_pair(
         interval_type::right_open(frame(1), frame(5)),
         playx::core::layer_container(std::vector<layer>{layer()}));
-    _imap += std::make_pair(
+    imap_ += std::make_pair(
         interval_type::right_open(frame(0), frame(1)),
         playx::core::layer_container(std::vector<layer>{layer()}));
 
-    std::cout << _imap << std::endl;
+    std::cout << imap_ << std::endl;
     return std::vector<layer>();
 }
 
