@@ -1,5 +1,7 @@
 #include "layer_container.h"
 
+#include <boost/icl/type_traits/identity_element.hpp>
+
 #include <iostream>
 
 namespace playx::core {
@@ -40,4 +42,14 @@ std::ostream& operator<<(std::ostream& os, layer_container const& lc)
     os << "]";
     return os;
 }
+}
+
+namespace boost::icl {
+
+template <>
+inline playx::core::layer_container unit_element<playx::core::layer_container>::value()
+{
+    return playx::core::layer_container();
+}
+
 }
