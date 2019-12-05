@@ -6,21 +6,13 @@
 
 namespace playx::core {
 
-keyframe_container::keyframe_container(std::vector<keyframe> v) : v_(v)
-{
-}
 
 std::vector<keyframe>& keyframe_container::get_keyframes()
 {
     return v_;
 }
 
-void keyframe_container::push_back(keyframe l)
-{
-    v_.push_back(l);
-}
-
-size_t keyframe_container::size() const
+size_t keyframe_container::size() const noexcept
 {
     return v_.size();
 }

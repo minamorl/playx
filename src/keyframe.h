@@ -13,8 +13,12 @@ class layer;
 class keyframe {
 
 public:
-    keyframe() = delete;
-    keyframe(QImage image, layer* layer, unit_frame start, unit_frame end);
+    keyframe(QImage image, layer* layer, unit_frame start, unit_frame end)
+        : image_(std::move(image))
+        , layer_(layer)
+        , start_(std::move(start))
+        , end_(std::move(end))
+    {}
     layer* get_layer();
     void set_layer(layer* layer);
     QImage& get_image();

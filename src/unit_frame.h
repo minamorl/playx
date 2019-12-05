@@ -11,7 +11,6 @@ class unit_frame {
 public:
     explicit unit_frame(uint32_t frame) : index_(frame) {}
     unit_frame() = default;
-    unit_frame(unit_frame const& u);
     bool operator==(unit_frame const& other) const noexcept;
     bool operator<(unit_frame const& other) const noexcept;
     unit_frame& operator++();

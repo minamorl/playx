@@ -3,13 +3,6 @@
 
 namespace playx::core {
 
-keyframe::keyframe(QImage image, layer* layer, unit_frame start, unit_frame end) :
-    image_(image),
-    layer_(layer),
-    start_(start),
-    end_(end)
-{}
-
 layer* keyframe::get_layer()
 {
     return layer_;

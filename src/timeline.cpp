@@ -10,8 +10,6 @@
 
 namespace playx::core {
 
-timeline::timeline() : imap_() {}
-
 keyframe_container timeline::get_keyframes_at(unit_frame f)
 {
     using interval_type = boost::icl::interval<unit_frame>;

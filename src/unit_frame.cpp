@@ -2,10 +2,6 @@
 
 namespace playx::core {
 
-unit_frame::unit_frame(unit_frame const& u) : index_(u.index_)
-{
-}
-
 uint32_t unit_frame::get_index() const
 {
     return index_;

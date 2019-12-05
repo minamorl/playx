@@ -7,12 +7,6 @@
 
 namespace playx::core {
 
-layer::layer(uint level)
-{
-    keyframe_container_ = std::make_unique<keyframe_container>();
-    level_ = level;
-}
-
 bool layer::operator==(layer const& other) const noexcept
 {
     return this->keyframe_container_ == other.keyframe_container_;

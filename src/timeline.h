@@ -14,7 +14,6 @@ namespace playx::core {
 
 class timeline {
 public:
-    timeline();
     keyframe_container get_keyframes_at(unit_frame f);
     std::vector<layer>& get_all_layers();
     layer& create_layer();

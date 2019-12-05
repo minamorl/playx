@@ -8,7 +8,6 @@ namespace playx::core {
 
 class application_state {
 public:
-    application_state();
     timeline& get_timeline();
     
 private:

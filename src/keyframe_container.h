@@ -10,12 +10,19 @@ namespace playx::core {
 class keyframe_container {
 public:
     keyframe_container() = default;
-    explicit keyframe_container(std::vector<keyframe> v);
+    explicit keyframe_container(std::vector<keyframe> v)
+        : v_(std::move(v))
+    {}
 
     std::vector<keyframe>& get_keyframes();
     
-    void push_back(keyframe l);
-    size_t size() const;
+    template<class... Args>
+    void emplace_back(Args&&... args)
+    {
+        v_.emplace_back(std::forward<Args>(args)...);
+    }
+
+    size_t size() const noexcept;
 
     keyframe_container& operator+=(keyframe_container const& other);
 
