@@ -16,16 +16,13 @@ keyframe_container timeline::get_keyframes_at(unit_frame f)
 {
     using interval_type = boost::icl::interval<unit_frame>;
 
-    // imap_ += std::make_pair(
-    //     interval_type::right_open(unit_frame(0), unit_frame(3)),
-    //     playx::core::layer_container(std::vector<layer>{layer()}));
-    // imap_ += std::make_pair(
-    //     interval_type::right_open(unit_frame(1), unit_frame(5)),
-    //     playx::core::layer_container(std::vector<layer>{layer()}));
-    // imap_ += std::make_pair(
-    //     interval_type::right_open(unit_frame(5), unit_frame(1)),
-    //     playx::core::layer_container(std::vector<layer>{layer()}));
-
+    for (auto layer : layers_) {
+        for (auto kf : layer.get_keyframe_container()->get_keyframes()) {
+            imap_ += std::make_pair(
+                kf.get_interval(), keyframe_container(std::vector<keyframe>{kf})
+            );
+        }
+    }
     std::cout << imap_ << std::endl;
 
     auto it = imap_.find(interval_type::closed(f, f));
