@@ -30,7 +30,7 @@ void painter_field::set_application_state(std::shared_ptr<playx::core::applicati
 
     auto& l = app_state->get_timeline().create_layer();
     l.get_keyframe_container()->emplace_back(
-        playx::core::keyframe(QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), &l, playx::core::unit_frame(0), playx::core::unit_frame(1)));
+        QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), &l, playx::core::unit_frame(0), playx::core::unit_frame(1));
 }
 
 
@@ -39,7 +39,7 @@ void painter_field::createLayer(QImage image)
     auto& l = app_state_->get_timeline().create_layer();
     currentLayerPos = l.get_level();
     l.get_keyframe_container()->emplace_back(
-        playx::core::keyframe(image, &l, playx::core::unit_frame(0), playx::core::unit_frame(1)));
+        image, &l, playx::core::unit_frame(0), playx::core::unit_frame(1));
     prevent_from_drawing_ = true;
     update();
 }
