@@ -1,4 +1,7 @@
 #include "painter_widget.h"
+#include "unit_frame.h"
+#include "keyframe.h"
+#include "layer.h"
 
 #include <QMouseEvent>
 #include <QDebug>
@@ -24,14 +27,19 @@ painter_field::painter_field(QWidget *parent) :
 void painter_field::set_application_state(std::shared_ptr<playx::core::application_state> app_state)
 {
     app_state_ = app_state;
-    app_state_->get_layer_container().push_back(playx::core::layer(QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), 0));
+
+    auto l = app_state->get_timeline().create_layer();
+    l.get_keyframe_container()->push_back(
+        playx::core::keyframe(QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), &l, playx::core::unit_frame(0), playx::core::unit_frame(1)));
 }
 
 
 void painter_field::createLayer(QImage image)
 {
-    app_state_->get_layer_container().push_back(playx::core::layer(image, app_state_->get_layer_container().size() - 1));
-    currentLayerPos = app_state_->get_layer_container().size() - 1;
+    auto l = app_state_->get_timeline().create_layer();
+    currentLayerPos = l.get_level();
+    l.get_keyframe_container()->push_back(
+        playx::core::keyframe(image, &l, playx::core::unit_frame(0), playx::core::unit_frame(1)));
     prevent_from_drawing_ = true;
     update();
 }
@@ -44,10 +52,10 @@ void painter_field::setCurrentLayer(size_t pos)
 playx::core::layer& painter_field::getCurrentLayer()
 {
     try {
-        return app_state_->get_layer_container().at(currentLayerPos);
+        return app_state_->get_timeline().get_all_layers().at(currentLayerPos);
     } catch (std::out_of_range& ex) {
         currentLayerPos = 0;
-        return app_state_->get_layer_container().at(currentLayerPos);
+        return app_state_->get_timeline().get_all_layers().at(currentLayerPos);
     }
 }
 
@@ -61,9 +69,9 @@ void painter_field::drawLayers()
 {
     QPainter painter(base_image_.get());
     base_image_->fill(Qt::GlobalColor::transparent);
-    for (auto &x : app_state_->get_layer_container()) {
+    for (auto &x : app_state_->get_timeline().get_all_layers()) {
         if (x.get_visibility_style()) {
-            painter.drawImage(QPoint(0, 0), x.get_image());
+            painter.drawImage(QPoint(0, 0), x.get_keyframe_container()->get_keyframes().at(0).get_image());
         }
     }
     drawBaseImage();
@@ -122,7 +130,7 @@ void painter_field::paintEvent(QPaintEvent*)
         drawLayers();
         return;
     }
-    auto& image = getCurrentLayer().get_image();
+    auto& image = getCurrentLayer().get_keyframe_container()->get_keyframes().at(0).get_image();
     QPainter p(&image);
     p.setRenderHint(QPainter::Antialiasing, true);
     p.setPen(Qt::NoPen);

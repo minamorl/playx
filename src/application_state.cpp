@@ -1,24 +1,18 @@
-#include "layer.h"
 #include "application_state.h"
+#include "timeline.h"
 
 #include <memory>
-#include <vector>
 
 namespace playx::core {
 
 application_state::application_state()
 {
-    layer_container_ = std::vector<layer>();
+    timeline_ = timeline();
 }
 
-std::vector<layer>& application_state::get_layer_container()
+timeline& application_state::get_timeline()
 {
-    return layer_container_;
-}
-
-void application_state::set_layer_container(std::vector<layer> layer_container)
-{
-    layer_container_ = layer_container;
+    return timeline_;
 }
 
 }

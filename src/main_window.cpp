@@ -1,7 +1,6 @@
 #include "main_window.h"
 #include "timeline_widget.h"
 #include "application_state.h"
-#include "timeline.h"
 
 #include <QGridLayout>
 #include <QPushButton>
@@ -12,9 +11,6 @@ main_window::main_window(QWidget *parent) :
     QMainWindow(parent)
 {
     setup();
-
-    playx::core::timeline tl;
-    tl.get_current_layers(playx::core::unit_frame(1));
 }
 
 void main_window::setup()

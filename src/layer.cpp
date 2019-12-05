@@ -7,42 +7,44 @@
 
 namespace playx::core {
 
-layer::layer(unit_frame start, unit_frame end) : start_(start), end_(end)
-{}
-
-layer::layer(QImage image, int32_t level) : image_(image), level_(level) {
-
+layer::layer(uint level)
+{
+    keyframe_container_ = std::make_unique<keyframe_container>();
+    level_ = level;
 }
 
 bool layer::operator==(layer const& other) const noexcept
 {
-    return this->image_ == other.image_;
+    return this->keyframe_container_ == other.keyframe_container_;
 }
 
+std::shared_ptr<keyframe_container> layer::get_keyframe_container()
+{
+    return keyframe_container_;
+}
+
+void layer::insert_keyframe(keyframe keyframe)
+{
+    keyframe.set_layer(this);
+}
 
 bool layer::get_visibility_style() const
 {
-    return this->state_;
+    return this->visibility_state_;
 }
 
 void layer::set_visibility_style(bool state)
 {
-    this->state_ = state;
+    this->visibility_state_ = state;
 }
 
-QImage& layer::get_image()
+uint layer::get_level()
 {
-    return this->image_;
+    return level_;
 }
 
-void layer::set_image(QImage image)
+void layer::set_level(uint level)
 {
-    this->image_ = image;
+    level_ = level;
 }
-
-boost::icl::discrete_interval<unit_frame> layer::get_interval() const {
-    auto interval = boost::icl::interval<unit_frame>::right_open(start_, end_);
-    return interval;
-}
-
 }

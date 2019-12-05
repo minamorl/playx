@@ -1,6 +1,8 @@
 #pragma once
 
 #include "unit_frame.h"
+#include "keyframe_container.h"
+#include "keyframe.h"
 
 #include <QImage>
 
@@ -14,23 +16,18 @@ namespace playx::core {
 class layer {
 
 public:
-    layer() = default;
-    layer(unit_frame start, unit_frame end);
-    layer(QImage image, int32_t level);
+    layer(uint level);
     bool operator==(layer const& other) const noexcept;
     bool get_visibility_style() const;
     void set_visibility_style(bool state);
-    QImage& get_image();
-    void set_image(QImage image);
-    boost::icl::discrete_interval<unit_frame> get_interval() const;
-
+    std::shared_ptr<keyframe_container> get_keyframe_container();
+    void insert_keyframe(keyframe keyframe);
+    uint get_level();
+    void set_level(uint level);
 private:
-    QImage image_;
-    bool state_ = true;
-    int32_t level_;
-
-    unit_frame start_;
-    unit_frame end_;
+    std::shared_ptr<keyframe_container> keyframe_container_;
+    bool visibility_state_ = true;
+    uint level_;
 };
 
 }
