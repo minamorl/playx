@@ -10,40 +10,47 @@
 
 namespace playx::core {
 
-keyframe_container timeline::get_keyframes_at(unit_frame f)
+timeline_components timeline::get_keyframes_at(unit_frame f)
 {
     using interval_type = boost::icl::interval<unit_frame>;
 
-    for (auto layer : layers_) {
-        for (auto kf : layer.get_keyframe_container()->get_keyframes()) {
-            imap_ += std::make_pair(
-                kf.get_interval(), keyframe_container(std::vector<keyframe>{kf})
-            );
-        }
+    imap_.clear();
+
+    for (auto& tp : components_) {
+        imap_ += std::make_pair(
+            tp.second->get_interval(), keyframe_container(std::vector<std::pair<std::shared_ptr<layer>, std::shared_ptr<keyframe>>>{tp}));
     }
+    
     std::cout << imap_ << std::endl;
 
     auto it = imap_.find(interval_type::closed(f, f));
     if (it == imap_.end()) {
         std::cout << "Nothing found" << std::endl;
-        return keyframe_container();
+        return timeline_components();
     }
     std::cout << it->second << std::endl;
-    
-    return it->second;
+    return static_cast<keyframe_container>(it->second).get_keyframes();
 }
 
-std::vector<layer>& timeline::get_all_layers()
+
+
+std::vector<std::shared_ptr<layer>> timeline::get_all_layers()
 {
+    std::sort(layers_.begin(), layers_.end(), [](std::shared_ptr<layer> x, std::shared_ptr<layer> y) {return x->get_level() < y->get_level();});
     return layers_;
 }
 
-layer& timeline::create_layer()
+std::shared_ptr<layer> timeline::create_layer()
 {
-    layer l(layer_counter_);
+    auto l = std::make_shared<layer>(layer_counter_);
     layers_.push_back(l);
     layer_counter_++;
     return layers_.at(layers_.size() - 1);
+}
+
+void timeline::insert_keyframe(std::shared_ptr<keyframe> k, std::shared_ptr<layer> l)
+{
+    components_.emplace_back(l, k);
 }
 
 }

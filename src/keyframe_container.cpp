@@ -7,7 +7,7 @@
 namespace playx::core {
 
 
-std::vector<keyframe>& keyframe_container::get_keyframes()
+std::vector<std::pair<std::shared_ptr<layer>, std::shared_ptr<keyframe>>>& keyframe_container::get_keyframes()
 {
     return v_;
 }
@@ -17,12 +17,8 @@ size_t keyframe_container::size() const noexcept
     return v_.size();
 }
 
-
 keyframe_container& keyframe_container::operator+=(keyframe_container const& other)
 {
-    std::cout << "operator+=" << std::endl;
-    std::cout << v_.size() << std::endl;
-    std::cout << other.v_.size() << std::endl;
     auto other_layer = other.v_;
     v_.insert(v_.end(), other_layer.begin(), other_layer.end());
     return *this;
@@ -31,7 +27,7 @@ bool keyframe_container::operator==(keyframe_container const& other) const
 {
     return v_ == other.v_;
 }
-std::vector<keyframe>& keyframe_container::operator()()
+std::vector<std::pair<std::shared_ptr<layer>, std::shared_ptr<keyframe>>>& keyframe_container::operator()()
 {
     return v_;
 }

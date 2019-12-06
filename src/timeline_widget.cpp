@@ -35,7 +35,7 @@ void timeline_cell::set_id(int id)
 
 void timeline_cell::initialize()
 {
-    auto const visibility = app_state_->get_timeline().get_all_layers().at(id_).get_visibility_style();
+    auto const visibility = app_state_->get_timeline().get_all_layers().at(id_)->get_visibility_style();
     if (visibility) {
         QPalette pal = palette();
         pal.setColor(QPalette::Background, QColor(20, 20, 20));
@@ -55,7 +55,7 @@ void timeline_cell::mousePressEvent(QMouseEvent *event)
         return;
     }
     switchBgColor();
-    app_state_->get_timeline().get_all_layers().at(id_).set_visibility_style(is_selected_);
+    app_state_->get_timeline().get_all_layers().at(id_)->set_visibility_style(is_selected_);
 
     notify_content_change();
 }

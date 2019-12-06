@@ -1,7 +1,9 @@
 #pragma once
 
+#include "layer.h"
 #include "keyframe.h"
 
+#include <memory>
 #include <vector>
 #include <iosfwd>
 
@@ -10,11 +12,11 @@ namespace playx::core {
 class keyframe_container {
 public:
     keyframe_container() = default;
-    explicit keyframe_container(std::vector<keyframe> v)
+    keyframe_container(std::vector<std::pair<std::shared_ptr<layer>, std::shared_ptr<keyframe>>> v)
         : v_(std::move(v))
     {}
 
-    std::vector<keyframe>& get_keyframes();
+    std::vector<std::pair<std::shared_ptr<layer>, std::shared_ptr<keyframe>>>& get_keyframes();
     
     template<class... Args>
     void emplace_back(Args&&... args)
@@ -27,11 +29,11 @@ public:
     keyframe_container& operator+=(keyframe_container const& other);
 
     bool operator==(keyframe_container const& other) const;
-    std::vector<keyframe>& operator()();
+    std::vector<std::pair<std::shared_ptr<layer>, std::shared_ptr<keyframe>>>& operator()();
     friend std::ostream& operator<<(std::ostream& os, const keyframe_container& lc);
 
 private:
-    std::vector<keyframe> v_;
+    std::vector<std::pair<std::shared_ptr<layer>, std::shared_ptr<keyframe>>> v_;
 };
 
 

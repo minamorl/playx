@@ -9,17 +9,7 @@ namespace playx::core {
 
 bool layer::operator==(layer const& other) const noexcept
 {
-    return this->keyframe_container_ == other.keyframe_container_;
-}
-
-std::shared_ptr<keyframe_container> layer::get_keyframe_container()
-{
-    return keyframe_container_;
-}
-
-void layer::insert_keyframe(keyframe keyframe)
-{
-    keyframe.set_layer(this);
+    return this->level_ == other.level_;
 }
 
 bool layer::get_visibility_style() const
@@ -32,7 +22,7 @@ void layer::set_visibility_style(bool state)
     this->visibility_state_ = state;
 }
 
-uint layer::get_level()
+uint layer::get_level() const
 {
     return level_;
 }

@@ -74,7 +74,9 @@
         "strstream": "cpp",
         "cfenv": "cpp",
         "valarray": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "codecvt": "cpp",
+        "csignal": "cpp"
     },
     "files.watcherExclude": {
         "**/.git/objects/**": true,

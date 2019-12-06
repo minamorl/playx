@@ -28,18 +28,22 @@ void painter_field::set_application_state(std::shared_ptr<playx::core::applicati
 {
     app_state_ = app_state;
 
-    auto& l = app_state->get_timeline().create_layer();
-    l.get_keyframe_container()->emplace_back(
-        QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), &l, playx::core::unit_frame(0), playx::core::unit_frame(1));
+    auto l = app_state->get_timeline().create_layer();
+    app_state_->get_timeline().insert_keyframe(
+        std::make_shared<playx::core::keyframe>(QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), playx::core::unit_frame(0), playx::core::unit_frame(1)), l);
+    // l.get_keyframe_container()->emplace_back(
+    //     QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), &l, playx::core::unit_frame(0), playx::core::unit_frame(1));
 }
 
 
 void painter_field::createLayer(QImage image)
 {
-    auto& l = app_state_->get_timeline().create_layer();
-    currentLayerPos = l.get_level();
-    l.get_keyframe_container()->emplace_back(
-        image, &l, playx::core::unit_frame(0), playx::core::unit_frame(1));
+    auto l = app_state_->get_timeline().create_layer();
+    currentLayerPos = l->get_level();
+    app_state_->get_timeline().insert_keyframe(
+        std::make_shared<playx::core::keyframe>(image, playx::core::unit_frame(0), playx::core::unit_frame(1)), l);
+    // l.get_keyframe_container()->emplace_back(
+    //     image, &l, playx::core::unit_frame(0), playx::core::unit_frame(1));
     prevent_from_drawing_ = true;
     update();
 }
@@ -49,7 +53,7 @@ void painter_field::setCurrentLayer(size_t pos)
     currentLayerPos = pos;
 }
 
-playx::core::layer& painter_field::getCurrentLayer()
+std::shared_ptr<playx::core::layer> painter_field::getCurrentLayer()
 {
     try {
         return app_state_->get_timeline().get_all_layers().at(currentLayerPos);
@@ -70,8 +74,13 @@ void painter_field::drawLayers()
     QPainter painter(base_image_.get());
     base_image_->fill(Qt::GlobalColor::transparent);
     for (auto &x : app_state_->get_timeline().get_all_layers()) {
-        if (x.get_visibility_style()) {
-            painter.drawImage(QPoint(0, 0), x.get_keyframe_container()->get_keyframes().at(0).get_image());
+        if (x->get_visibility_style()) {
+            // painter.drawImage(QPoint(0, 0), x.get_keyframe_container()->get_keyframes().at(0).get_image());
+            for (auto& y : app_state_->get_timeline().get_keyframes_at(playx::core::unit_frame(0))) {
+                if (y.first == x) {
+                    painter.drawImage(QPoint(0, 0), y.second->get_image());
+                }
+            }
         }
     }
     drawBaseImage();
@@ -130,7 +139,14 @@ void painter_field::paintEvent(QPaintEvent*)
         drawLayers();
         return;
     }
-    auto& image = getCurrentLayer().get_keyframe_container()->get_keyframes().at(0).get_image();
+    // auto& image = getCurrentLayer().get_keyframe_container()->get_keyframes().at(0).get_image();
+    auto kfs = app_state_->get_timeline().get_keyframes_at(playx::core::unit_frame(0));
+    auto it = std::find_if(kfs.begin(), kfs.end(), [this](std::pair<std::shared_ptr<playx::core::layer>, std::shared_ptr<playx::core::keyframe>> x) { return x.first == getCurrentLayer(); });
+    if (it == kfs.end()) {
+        std::cout << "not found" << std::endl;
+        return;
+    }
+    auto& image = it->second->get_image();
     QPainter p(&image);
     p.setRenderHint(QPainter::Antialiasing, true);
     p.setPen(Qt::NoPen);

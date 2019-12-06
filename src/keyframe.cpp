@@ -3,15 +3,6 @@
 
 namespace playx::core {
 
-layer* keyframe::get_layer()
-{
-    return layer_;
-}
-
-void keyframe::set_layer(layer* layer)
-{
-    layer_ = layer;
-}
 
 QImage& keyframe::get_image()
 {
@@ -27,7 +18,7 @@ boost::icl::discrete_interval<unit_frame> keyframe::get_interval() const {
 
 bool keyframe::operator==(keyframe const& other) const
 {
-    return image_ == other.image_ && layer_ == other.layer_ && start_ == other.start_ && end_ == other.end_;
+    return start_ == other.start_ && end_ == other.end_ && image_ == other.image_;
 }
 
 }
