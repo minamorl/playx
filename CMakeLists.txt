@@ -39,6 +39,12 @@ target_link_libraries( binary hana )
 target_link_libraries( binary Qt5::Core )
 target_link_libraries( binary Qt5::Widgets )
 
+target_link_libraries( binary pthread )
+
+find_package(Boost COMPONENTS thread REQUIRED)
+target_link_libraries( binary Boost::thread )
+
+
 if(MSVC)
   target_compile_options(binary PRIVATE /W4 /WX)
 else()
