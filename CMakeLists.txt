@@ -27,7 +27,8 @@ add_executable( binary
     ./src/application_state.cpp
     ./src/keyframe.cpp
     ./src/keyframe_container.cpp
-    ./src/unit_frame.cpp)
+    ./src/unit_frame.cpp
+    ./src/brush.cpp)
 
 set_target_properties(binary PROPERTIES AUTOMOC TRUE)
 

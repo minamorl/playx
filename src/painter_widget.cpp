@@ -2,6 +2,7 @@
 #include "unit_frame.h"
 #include "keyframe.h"
 #include "layer.h"
+#include "brush.h"
 
 #include <QMouseEvent>
 #include <QDebug>
@@ -87,16 +88,19 @@ void painter_field::interpolate(QPainter& p)
     auto const x_diff = point_.x() - previous_point_.x();
     auto const y_diff = point_.y() - previous_point_.y();
 
+    playx::tools::brush brush(p, 4);
+
+
     if (std::abs(x_diff) < 1 && std::abs(y_diff) > 1) {
         auto const y_unit = y_diff / std::abs(y_diff);
         for (int i = 0; std::abs(i) < std::abs(y_diff); i += y_unit) {
-            p.drawEllipse(QPointF(point_.x(), y + i), 4, 4);
+            brush.paint(QPointF(point_.x(), y + i));
         }
         return;
     } else if (std::abs(y_diff) < 1 && std::abs(x_diff) > 1) {
         auto const x_unit = x_diff / std::abs(x_diff);
         for (int i = 0; std::abs(i) < std::abs(x_diff); i += x_unit) {
-            p.drawEllipse(QPointF(x + i, point_.y()), 4, 4);
+            brush.paint(QPointF(x + i, point_.y()));
         }
         return;
     } else if (std::abs(x_diff) < 1 || std::abs(y_diff) < 1) {
@@ -108,11 +112,11 @@ void painter_field::interpolate(QPainter& p)
         auto const is_x_diff_longer_than_y_diff = std::abs(x_diff) > std::abs(y_diff);
         if (is_x_diff_longer_than_y_diff) {
             for (int i = 0; std::abs(i) < std::abs(x_diff); i += x_unit) {
-                p.drawEllipse(QPointF(x + i, slope * (x + i) + intercept), 4, 4);
+                brush.paint(QPointF(x + i, slope * (x + i) + intercept));
             }
         } else {
              for (int i = 0; std::abs(i) < std::abs(y_diff); i += y_unit) {
-                p.drawEllipse(QPointF(((y + i) - intercept) / slope, y + i), 4, 4);
+                brush.paint(QPointF(((y + i) - intercept) / slope, y + i));
             }
         }
     }
@@ -138,11 +142,9 @@ void painter_field::paintEvent(QPaintEvent*)
     }
     auto& image = it->second->get_image();
     QPainter p(&image);
-    p.setRenderHint(QPainter::Antialiasing, true);
-    p.setPen(Qt::NoPen);
-    p.setBrush(QColor(255, 0, 0));
+    playx::tools::brush brush(p, 4);
     interpolate(p);
-    p.drawEllipse(point_, 4, 4);
+    brush.paint(point_);
     p.end();
     drawLayers();
 }
