@@ -19,9 +19,7 @@ public:
     
     void set_application_state(std::shared_ptr<playx::core::application_state> app_state);
     void createLayer(QImage image);
-    void setCurrentLayer(size_t pos);
     std::shared_ptr<playx::core::layer> getCurrentLayer();
-    size_t currentLayerPos = 0;
     QSize minimumSizeHint() const;
 
 signals:

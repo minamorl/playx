@@ -64,12 +64,12 @@ void main_window::handleButton1()
 
 void main_window::handleButton2()
 {
-    pf->setCurrentLayer(pf->currentLayerPos + 1);
+    app_state->change_current_layer_to(app_state->current_layer()->get_level() + 1);
 }
 
 void main_window::handleButton3()
 {
-    pf->setCurrentLayer(pf->currentLayerPos - 1);
+    app_state->change_current_layer_to(app_state->current_layer()->get_level() - 1);
 }
 
 }

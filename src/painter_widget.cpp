@@ -39,7 +39,7 @@ void painter_field::set_application_state(std::shared_ptr<playx::core::applicati
 void painter_field::createLayer(QImage image)
 {
     auto l = app_state_->get_timeline().create_layer();
-    currentLayerPos = l->get_level();
+    app_state_->change_current_layer_to(l->get_level());
     app_state_->get_timeline().insert_keyframe(
         std::make_shared<playx::core::keyframe>(image, playx::core::unit_frame(0), playx::core::unit_frame(1)), l);
     // l.get_keyframe_container()->emplace_back(
@@ -48,19 +48,9 @@ void painter_field::createLayer(QImage image)
     update();
 }
 
-void painter_field::setCurrentLayer(size_t pos)
-{
-    currentLayerPos = pos;
-}
-
 std::shared_ptr<playx::core::layer> painter_field::getCurrentLayer()
 {
-    try {
-        return app_state_->get_timeline().get_all_layers().at(currentLayerPos);
-    } catch (std::out_of_range& ex) {
-        currentLayerPos = 0;
-        return app_state_->get_timeline().get_all_layers().at(currentLayerPos);
-    }
+    return app_state_->current_layer();
 }
 
 void painter_field::drawBaseImage()
@@ -76,7 +66,7 @@ void painter_field::drawLayers()
     for (auto &x : app_state_->get_timeline().get_all_layers()) {
         if (x->get_visibility_style()) {
             // painter.drawImage(QPoint(0, 0), x.get_keyframe_container()->get_keyframes().at(0).get_image());
-            for (auto& y : app_state_->get_timeline().get_keyframes_at(playx::core::unit_frame(0))) {
+            for (auto& y : app_state_->get_timeline().get_keyframes_at(playx::core::unit_frame(app_state_->get_current_frame()))) {
                 if (y.first == x) {
                     painter.drawImage(QPoint(0, 0), y.second->get_image());
                 }
@@ -140,7 +130,7 @@ void painter_field::paintEvent(QPaintEvent*)
         return;
     }
     // auto& image = getCurrentLayer().get_keyframe_container()->get_keyframes().at(0).get_image();
-    auto kfs = app_state_->get_timeline().get_keyframes_at(playx::core::unit_frame(0));
+    auto kfs = app_state_->get_timeline().get_keyframes_at(app_state_->get_current_frame());
     auto it = std::find_if(kfs.begin(), kfs.end(), [this](std::pair<std::shared_ptr<playx::core::layer>, std::shared_ptr<playx::core::keyframe>> x) { return x.first == getCurrentLayer(); });
     if (it == kfs.end()) {
         std::cout << "not found" << std::endl;
