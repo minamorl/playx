@@ -27,7 +27,8 @@ add_executable( binary
     ./src/application_state.cpp
     ./src/keyframe.cpp
     ./src/keyframe_container.cpp
-    ./src/unit_frame.cpp)
+    ./src/unit_frame.cpp
+    ./src/brush.cpp)
 
 set_target_properties(binary PROPERTIES AUTOMOC TRUE)
 
@@ -38,6 +39,12 @@ target_link_libraries( binary hana )
 
 target_link_libraries( binary Qt5::Core )
 target_link_libraries( binary Qt5::Widgets )
+
+target_link_libraries( binary pthread )
+
+find_package(Boost COMPONENTS thread REQUIRED)
+target_link_libraries( binary Boost::thread )
+
 
 if(MSVC)
   target_compile_options(binary PRIVATE /W4 /WX)

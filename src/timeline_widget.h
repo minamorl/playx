@@ -1,6 +1,7 @@
 #pragma once
 
 #include "application_state.h"
+#include "unit_frame.h"
 
 #include <QWidget>
 #include <QGridLayout>
@@ -14,19 +15,23 @@ class timeline_cell : public QWidget {
 Q_OBJECT
 
 public:
-    timeline_cell();
+    timeline_cell(QWidget* parent = nullptr);
     void set_application_state(std::shared_ptr<playx::core::application_state> app_state);
-    void set_id(int id);
+    void set_index(uint layer_idx, playx::core::unit_frame keyframe_idx);
     void initialize();
 signals:
+    void notify_selection_change();
     void notify_content_change();
+public slots:
+    void receive_selection_change();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
 private:
     void switchBgColor();
     bool is_selected_ = true;
-    int id_;
+    uint layer_idx_;
+    playx::core::unit_frame keyframe_idx_;
     std::shared_ptr<playx::core::application_state> app_state_;
 };
 

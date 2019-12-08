@@ -19,6 +19,9 @@ class main_window : public QMainWindow {
 public:
     explicit main_window(QWidget *parent = nullptr);
 
+protected:
+    void keyPressEvent(QKeyEvent *event);
+
 private slots:
     void handleButton1();
     void handleButton2();

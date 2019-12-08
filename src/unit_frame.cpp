@@ -36,4 +36,9 @@ std::ostream& operator<<(std::ostream& os, const unit_frame& f)
     return os;
 }
 
+unit_frame operator+(unit_frame const& f, unit_frame const& other)
+{
+    return unit_frame(f.index_ + other.index_);
+}
+
 }

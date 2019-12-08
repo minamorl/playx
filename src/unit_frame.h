@@ -19,6 +19,7 @@ public:
     uint32_t get_index() const;
     void set_index(uint32_t frame);
     friend std::ostream& operator<<(std::ostream& os, const unit_frame& f);
+    friend unit_frame operator+(unit_frame const& f, unit_frame const& other);
 
 private:
     uint32_t index_;
