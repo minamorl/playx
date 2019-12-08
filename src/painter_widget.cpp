@@ -67,8 +67,9 @@ void painter_field::drawLayers()
     for (auto &x : app_state_->get_timeline().get_all_layers()) {
         if (x->get_visibility_style()) {
             // painter.drawImage(QPoint(0, 0), x.get_keyframe_container()->get_keyframes().at(0).get_image());
-            for (auto& y : app_state_->get_timeline().get_keyframes_at(playx::core::unit_frame(app_state_->get_current_frame()))) {
-                if (y.first == x) {
+            for (auto& y : app_state_->get_timeline().get_keyframes_at(app_state_->get_current_frame())) {
+                if (y.first->get_level() == x->get_level()) {
+                    std::cout << "HERE" << std::endl;
                     painter.drawImage(QPoint(0, 0), y.second->get_image());
                 }
             }
@@ -133,14 +134,11 @@ void painter_field::paintEvent(QPaintEvent*)
         drawLayers();
         return;
     }
-    // auto& image = getCurrentLayer().get_keyframe_container()->get_keyframes().at(0).get_image();
-    auto kfs = app_state_->get_timeline().get_keyframes_at(app_state_->get_current_frame());
-    auto it = std::find_if(kfs.begin(), kfs.end(), [this](std::pair<std::shared_ptr<playx::core::layer>, std::shared_ptr<playx::core::keyframe>> x) { return x.first == getCurrentLayer(); });
-    if (it == kfs.end()) {
-        std::cout << "not found" << std::endl;
+    auto component = app_state_->get_timeline().find_component(app_state_->current_layer()->get_level(), app_state_->get_current_frame());
+    if (component == boost::none) {
         return;
     }
-    auto& image = it->second->get_image();
+    auto& image = component->second->get_image();
     QPainter p(&image);
     playx::tools::brush brush(p, 4);
     interpolate(p);

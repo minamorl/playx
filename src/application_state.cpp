@@ -17,6 +17,11 @@ unit_frame application_state::get_current_frame()
     return current_frame_;
 }
 
+void application_state::set_current_frame(unit_frame frame)
+{
+    current_frame_ = frame;
+}
+
 std::shared_ptr<layer> application_state::current_layer()
 {
     return get_timeline().get_all_layers().at(current_layer_index_);

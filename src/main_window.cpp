@@ -5,6 +5,8 @@
 #include <QGridLayout>
 #include <QPushButton>
 
+#include <iostream>
+
 namespace playx::ui {
 
 main_window::main_window(QWidget *parent) :
@@ -15,7 +17,8 @@ main_window::main_window(QWidget *parent) :
 
 void main_window::setup()
 {
-    app_state = std::make_shared<playx::core::application_state>();
+    app_state = std::make_shared<playx::core::application_state>(
+        playx::core::timeline(playx::core::unit_frame(24)));
     window = std::make_unique<QWidget>();
     
     layout = std::make_unique<QGridLayout>();
@@ -64,11 +67,13 @@ void main_window::handleButton1()
 
 void main_window::handleButton2()
 {
+    std::cout << "called" << std::endl;
     app_state->change_current_layer_to(app_state->current_layer()->get_level() + 1);
 }
 
 void main_window::handleButton3()
 {
+    std::cout << "called" << std::endl;
     app_state->change_current_layer_to(app_state->current_layer()->get_level() - 1);
 }
 
