@@ -20,7 +20,10 @@ public:
     void set_index(uint layer_idx, playx::core::unit_frame keyframe_idx);
     void initialize();
 signals:
+    void notify_selection_change();
     void notify_content_change();
+public slots:
+    void receive_selection_change();
 
 protected:
     void mousePressEvent(QMouseEvent *event);

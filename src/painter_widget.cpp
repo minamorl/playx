@@ -32,8 +32,6 @@ void painter_field::set_application_state(std::shared_ptr<playx::core::applicati
     auto l = app_state->get_timeline().create_layer();
     app_state_->get_timeline().insert_keyframe(
         std::make_shared<playx::core::keyframe>(QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), playx::core::unit_frame(0), playx::core::unit_frame(1)), l);
-    // l.get_keyframe_container()->emplace_back(
-    //     QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), &l, playx::core::unit_frame(0), playx::core::unit_frame(1));
 }
 
 
@@ -43,8 +41,6 @@ void painter_field::createLayer(QImage image)
     app_state_->change_current_layer_to(l->get_level());
     app_state_->get_timeline().insert_keyframe(
         std::make_shared<playx::core::keyframe>(image, playx::core::unit_frame(0), playx::core::unit_frame(1)), l);
-    // l.get_keyframe_container()->emplace_back(
-    //     image, &l, playx::core::unit_frame(0), playx::core::unit_frame(1));
     prevent_from_drawing_ = true;
     update();
 }
@@ -66,10 +62,8 @@ void painter_field::drawLayers()
     base_image_->fill(Qt::GlobalColor::transparent);
     for (auto &x : app_state_->get_timeline().get_all_layers()) {
         if (x->get_visibility_style()) {
-            // painter.drawImage(QPoint(0, 0), x.get_keyframe_container()->get_keyframes().at(0).get_image());
             for (auto& y : app_state_->get_timeline().get_keyframes_at(app_state_->get_current_frame())) {
                 if (y.first->get_level() == x->get_level()) {
-                    std::cout << "HERE" << std::endl;
                     painter.drawImage(QPoint(0, 0), y.second->get_image());
                 }
             }
@@ -125,12 +119,14 @@ void painter_field::interpolate(QPainter& p)
 
 void painter_field::receiveChange()
 {
+    prevent_from_drawing_ = true;
     update();
 }
 
 void painter_field::paintEvent(QPaintEvent*)
 {
     if (prevent_from_drawing_) {
+        prevent_from_drawing_ = false;
         drawLayers();
         return;
     }

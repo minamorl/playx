@@ -44,7 +44,7 @@ void timeline_cell::initialize()
         setPalette(pal);
         return;
     }
-    auto visibility = component->first->get_visibility_style();
+    auto visibility = component->first->get_visibility_style() && app_state_->get_current_frame() == keyframe_idx_;
     if (visibility) {
         QPalette pal = palette();
         pal.setColor(QPalette::Background, QColor(20, 20, 20));
@@ -57,6 +57,32 @@ void timeline_cell::initialize()
    is_selected_ = visibility;
 }
 
+void timeline_cell::receive_selection_change()
+{
+    if (app_state_->get_current_frame().get_index() != keyframe_idx_.get_index()) {
+        if (app_state_->get_timeline().find_component(layer_idx_, keyframe_idx_) == boost::none) {
+            QPalette pal = palette();
+            pal.setColor(QPalette::Background, QColor(230, 230, 230));
+            setPalette(pal);
+        } else {
+            QPalette pal = palette();
+            pal.setColor(QPalette::Background, QColor(180, 180, 180));
+            setPalette(pal);
+        }
+    } else {
+        if (app_state_->get_timeline().find_component(layer_idx_, keyframe_idx_) == boost::none) {
+            QPalette pal = palette();
+            pal.setColor(QPalette::Background, QColor(230, 230, 230));
+            setPalette(pal);
+        } else {
+            QPalette pal = palette();
+            pal.setColor(QPalette::Background, QColor(20, 20, 20));
+            setPalette(pal);
+        }
+    }
+    update();
+}
+
 void timeline_cell::mousePressEvent(QMouseEvent *event)
 {
     qDebug() << event;
@@ -65,18 +91,18 @@ void timeline_cell::mousePressEvent(QMouseEvent *event)
     }
     auto component = app_state_->get_timeline().find_or_create_component(layer_idx_, keyframe_idx_, keyframe_idx_ + playx::core::unit_frame(1));
     app_state_->set_current_frame(keyframe_idx_);
+    app_state_->change_current_layer_to(layer_idx_);
 
     switchBgColor();
-    component.first->set_visibility_style(is_selected_);
-
+    
+    std::cout <<"is_selected" <<is_selected_ << std::endl;
     notify_content_change();
+    notify_selection_change();
 }
 
 void timeline_cell::switchBgColor()
 {
-    is_selected_ = !is_selected_;
-
-    if (is_selected_) {
+    if (keyframe_idx_ == app_state_->get_current_frame()) {
         QPalette pal = palette();
         pal.setColor(QPalette::Background, QColor(20, 20, 20));
         setPalette(pal);
@@ -85,6 +111,8 @@ void timeline_cell::switchBgColor()
         pal.setColor(QPalette::Background, QColor(180, 180, 180));
         setPalette(pal);
     }
+
+    update();
 }
 
 timeline_widget::timeline_widget() 
@@ -108,6 +136,11 @@ void timeline_widget::render_widget()
             cells_.push_back(c);
             layout_->addWidget(c, app_state_->get_timeline().get_all_layers().size() - i, j);
             connect(c, SIGNAL(notify_content_change()), this, SLOT(receiveVisibilityChange()));
+        }
+    }
+    for (auto cell1 : cells_) {
+        for (auto cell2 : cells_) {
+            connect(cell1, &timeline_cell::notify_selection_change, cell2, &timeline_cell::receive_selection_change);
         }
     }
     setLayout(layout_.get());
