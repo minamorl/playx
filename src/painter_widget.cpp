@@ -126,7 +126,6 @@ void painter_field::receiveChange()
 void painter_field::paintEvent(QPaintEvent*)
 {
     if (prevent_from_drawing_) {
-        prevent_from_drawing_ = false;
         drawLayers();
         return;
     }
