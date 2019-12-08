@@ -1,18 +1,20 @@
+#pragma once
+
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 
 namespace playx::core {
 
-template <class T>
 class timer {
 public:
-    timer(T callback, boost::asio::chrono::milliseconds duration, uint repeat_count)
+    timer() = default;
+    timer(std::function<void(uint)> callback, uint duration, uint repeat_count)
         : io_()
         , callback_(std::move(callback))
-        , timer_(io_, duration)
+        , timer_(io_, boost::asio::chrono::milliseconds(duration))
         , strand_(io_)
-        , duration_(duration)
+        , duration_(boost::asio::chrono::milliseconds(duration))
         , repeat_count_(repeat_count)
         , counter_()
     {}
@@ -36,7 +38,7 @@ public:
 
 private:
     boost::asio::io_service io_;
-    T callback_;
+    std::function<void(uint)> callback_;
     boost::asio::steady_timer timer_;
     boost::thread t_;
     boost::asio::io_service::strand strand_;

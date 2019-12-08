@@ -3,6 +3,7 @@
 #include "keyframe.h"
 #include "layer.h"
 #include "brush.h"
+#include "timer.h"
 
 #include <QMouseEvent>
 #include <QDebug>
@@ -19,8 +20,8 @@ QSize painter_field::minimumSizeHint() const
 }
 
 
-painter_field::painter_field(QWidget *parent) :
-    QWidget(parent)
+painter_field::painter_field(QWidget *parent)
+    : QWidget(parent)
 {
     base_image_ = std::make_unique<QImage>(720, 405, QImage::Format::Format_A2BGR30_Premultiplied);
 }
@@ -140,6 +141,15 @@ void painter_field::paintEvent(QPaintEvent*)
     brush.paint(point_);
     p.end();
     drawLayers();
+}
+void painter_field::start_timer()
+{
+    auto l = [&](uint){
+        app_state_->set_current_frame(app_state_->get_current_frame() + playx::core::unit_frame(1));
+        update();
+    };
+    t_ = std::make_unique<playx::core::timer>(l, 2000, 24);
+    t_->start();
 }
 void painter_field::mouseMoveEvent(QMouseEvent *event)
 {

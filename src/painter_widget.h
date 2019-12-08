@@ -1,13 +1,16 @@
 #pragma once
 
-#include<layer.h>
-#include<memory>
+#include"layer.h"
+#include "timer.h"
+#include "application_state.h"
+
 #include<QWidget>
 #include<QtGui/QPainter>
 #include<QMainWindow>
 #include<QGraphicsView>
 #include<QLabel>
-#include <application_state.h>
+
+#include<memory>
 
 namespace playx::ui {
 
@@ -21,6 +24,7 @@ public:
     void createLayer(QImage image);
     std::shared_ptr<playx::core::layer> getCurrentLayer();
     QSize minimumSizeHint() const;
+    void start_timer();
 
 signals:
     void changeLayerState();
@@ -41,6 +45,7 @@ private:
     std::vector<playx::core::layer> layers_;
     bool prevent_from_drawing_ = true;
     std::shared_ptr<playx::core::application_state> app_state_;
+    std::unique_ptr<playx::core::timer> t_;
 };
 
 }
