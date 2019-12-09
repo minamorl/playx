@@ -70,6 +70,11 @@ void main_window::keyPressEvent(QKeyEvent *event)
     boost::bind(&painter_field::start_timer, pf.get())();
 }
 
+void main_window::closeEvent(QCloseEvent* bar)
+{
+    pf->stop_timer();
+}
+
 void main_window::handleButton1()
 {
     auto image = QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied);

@@ -151,6 +151,10 @@ void painter_field::start_timer()
     t_ = std::make_unique<playx::core::timer>(l, 2000, 24);
     t_->start();
 }
+void painter_field::stop_timer()
+{
+    t_->stop();
+}
 void painter_field::mouseMoveEvent(QMouseEvent *event)
 {
     previous_point_ = point_;

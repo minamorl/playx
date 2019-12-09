@@ -2,7 +2,7 @@ cmake_minimum_required( VERSION 3.8 )
 
 enable_language(CXX)
 
-
+# set(Boost_DEBUG 1)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -32,22 +32,20 @@ add_executable( binary
 
 set_target_properties(binary PROPERTIES AUTOMOC TRUE)
 
-include_directories( ./include ./src ./libs/hana/include )
-
-add_subdirectory( ./libs/hana )
-target_link_libraries( binary hana )
+include_directories( ./include ./src)
 
 target_link_libraries( binary Qt5::Core )
 target_link_libraries( binary Qt5::Widgets )
 
-target_link_libraries( binary pthread )
+find_package(Threads REQUIRED)
+target_link_libraries (binary Threads::Threads)
 
 find_package(Boost COMPONENTS thread REQUIRED)
 target_link_libraries( binary Boost::thread )
 
 
 if(MSVC)
-  target_compile_options(binary PRIVATE /W4 /WX)
+  target_compile_options(binary PRIVATE /W4)
 else()
   target_compile_options(binary PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()

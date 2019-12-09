@@ -25,12 +25,14 @@ public:
     std::shared_ptr<playx::core::layer> getCurrentLayer();
     QSize minimumSizeHint() const;
     void start_timer();
+    void stop_timer();
 
 signals:
     void changeLayerState();
 public slots:
     void receiveChange();
 protected:
+    void deleteLater();
     void paintEvent(QPaintEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);

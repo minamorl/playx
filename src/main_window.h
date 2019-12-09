@@ -21,6 +21,7 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *event);
+    void closeEvent(QCloseEvent* bar);
 
 private slots:
     void handleButton1();
