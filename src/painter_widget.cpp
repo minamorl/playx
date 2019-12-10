@@ -88,21 +88,19 @@ void painter_field::interpolate(QPainter& p)
 
     playx::tools::brush brush(p, 4);
 
-
-    if (std::abs(x_diff) < 1 && std::abs(y_diff) > 1) {
+    if (std::abs(x_diff) < 1 && std::abs(y_diff) >= 1) {
         auto const y_unit = y_diff / std::abs(y_diff);
         for (int i = 0; std::abs(i) < std::abs(y_diff); i += y_unit) {
             brush.paint(QPointF(point_.x(), y + i));
         }
         return;
-    } else if (std::abs(y_diff) < 1 && std::abs(x_diff) > 1) {
+    } else if (std::abs(y_diff) < 1 && std::abs(x_diff) >= 1) {
         auto const x_unit = x_diff / std::abs(x_diff);
         for (int i = 0; std::abs(i) < std::abs(x_diff); i += x_unit) {
             brush.paint(QPointF(x + i, point_.y()));
         }
         return;
-    } else if (std::abs(x_diff) < 1 || std::abs(y_diff) < 1) {
-        // nothing to do.
+    } else if (std::abs(x_diff) == 0 || std::abs(y_diff) == 0) {
         return;
     } else {
         auto const x_unit = x_diff / std::abs(x_diff);
@@ -143,6 +141,7 @@ void painter_field::paintEvent(QPaintEvent*)
     brush.paint(point_);
     p.end();
     drawLayers();
+    previous_point_ = point_;
 }
 void painter_field::start_timer()
 {
@@ -161,7 +160,6 @@ void painter_field::stop_timer()
 }
 void painter_field::mouseMoveEvent(QMouseEvent *event)
 {
-    previous_point_ = point_;
     point_ = event->pos();
     update();
 }

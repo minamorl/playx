@@ -22,13 +22,10 @@ timeline_components timeline::get_keyframes_at(unit_frame f)
             tp.second->get_interval(), keyframe_container(std::vector<std::pair<std::shared_ptr<layer>, std::shared_ptr<keyframe>>>{tp}));
     }
     
-    std::cout << imap_ << std::endl;
-
     auto it = imap_.find(interval_type::closed(f, f));
     if (it == imap_.end()) {
         return timeline_components();
     }
-    std::cout << it->second << std::endl;
     return static_cast<keyframe_container>(it->second).get_keyframes();
 }
 
