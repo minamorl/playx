@@ -24,15 +24,17 @@ painter_field::painter_field(QWidget *parent)
     : QWidget(parent)
 {
     base_image_ = std::make_unique<QImage>(720, 405, QImage::Format::Format_A2BGR30_Premultiplied);
+    base_image_->fill(Qt::transparent);
 }
 
 void painter_field::set_application_state(std::shared_ptr<playx::core::application_state> app_state)
 {
     app_state_ = app_state;
-
+    auto image = QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied);
+    image.fill(Qt::transparent);
     auto l = app_state->get_timeline().create_layer();
     app_state_->get_timeline().insert_keyframe(
-        std::make_shared<playx::core::keyframe>(QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), playx::core::unit_frame(0), playx::core::unit_frame(1)), l);
+        std::make_shared<playx::core::keyframe>(image, playx::core::unit_frame(0), playx::core::unit_frame(1)), l);
 }
 
 
@@ -153,7 +155,9 @@ void painter_field::start_timer()
 }
 void painter_field::stop_timer()
 {
-    t_->stop();
+    if (t_ != nullptr) {
+        t_->stop();
+    }
 }
 void painter_field::mouseMoveEvent(QMouseEvent *event)
 {

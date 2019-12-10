@@ -67,7 +67,9 @@ std::pair<std::shared_ptr<layer>, std::shared_ptr<keyframe>> timeline::find_or_c
         return c.first->get_level() == layer_idx;
     });
     if (it == kfs.end()) {
-        std::shared_ptr<keyframe> kf = std::make_shared<playx::core::keyframe>(QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied), keyframe_start, keyframe_end);
+        auto image = QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied);
+        image.fill(Qt::transparent);
+        std::shared_ptr<keyframe> kf = std::make_shared<playx::core::keyframe>(image, keyframe_start, keyframe_end);
         std::shared_ptr<layer> l = std::make_shared<layer>(layer_idx);
         insert_keyframe(kf, l);
         return std::make_pair(l, kf);

@@ -78,7 +78,7 @@ void main_window::closeEvent(QCloseEvent* bar)
 void main_window::handleButton1()
 {
     auto image = QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied);
-    image.fill(QColor(0, 0, 0, 80));
+    image.fill(Qt::transparent);
     pf->createLayer(image);
 }
 
