@@ -1,6 +1,7 @@
 #include "main_window.h"
 #include "timeline_widget.h"
 #include "application_state.h"
+#include "colorwheel_widget.h"
 
 #include <QGridLayout>
 #include <QPushButton>
@@ -34,6 +35,9 @@ void main_window::setup()
     layout->addWidget(pf.get(), 0, 0);
 
     sidebar_layout = std::make_unique<QVBoxLayout>();
+
+    auto cw = new colorwheel_widget();
+    sidebar_layout->addWidget(cw);
 
     // buttons (temporary)
     auto button1 = new QPushButton("+layer");
