@@ -74,7 +74,7 @@ void main_window::keyPressEvent(QKeyEvent *event)
     boost::bind(&painter_field::start_timer, pf.get())();
 }
 
-void main_window::closeEvent(QCloseEvent* bar)
+void main_window::closeEvent(QCloseEvent*)
 {
     pf->stop_timer();
 }

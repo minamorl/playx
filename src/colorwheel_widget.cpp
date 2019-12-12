@@ -1,5 +1,3 @@
-#pragma once
-
 #include "colorwheel_widget.h"
 
 #include <QSurfaceFormat>
