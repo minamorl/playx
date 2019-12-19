@@ -3,9 +3,12 @@
 #include <QSurfaceFormat>
 #include <QWidget>
 #include <QOpenGLWidget>
+#include <QMouseEvent>
+#include <QDesktopWidget>
 
 #include <memory>
 #include <iostream>
+#include <cmath>
 
 namespace playx::ui {
 
@@ -62,11 +65,17 @@ void main( void ) {
 colorwheel_widget::colorwheel_widget(QWidget* parent)
 	: QOpenGLWidget(parent)
 {
+	context_ = std::make_unique<QOpenGLContext>();
+
 	QSurfaceFormat fmt;
 	fmt.setVersion(4, 0);
 	fmt.setProfile(QSurfaceFormat::CoreProfile);
 	QSurfaceFormat::setDefaultFormat(fmt);
+	
+	context_->create();
 
+	setMouseTracking(true);
+	
 	setFixedSize(200, 200);
 	setAutoFillBackground(false);
 }
@@ -106,6 +115,32 @@ void colorwheel_widget::paintGL()
 	program_->disableAttributeArray(vertex_location);
 	
 	program_->release();
+}
+
+void colorwheel_widget::mouseMoveEvent(QMouseEvent *event)
+{
+    if(event->buttons() == Qt::LeftButton) {
+		auto const x = event->x();
+		auto const y = event->y();
+
+		auto const width = this->width();
+		auto const height = this->height();
+
+		auto const window_point = QPoint(
+			geometry().x() + x,
+			geometry().y() + y
+		);
+		
+		float pixel[] = {0, 0, 0, 0};
+
+		qDebug() << window_point;
+		if (std::pow(x - width / 2, 2) + std::pow(y - height / 2, 2) <= std::pow(width / 2, 2)) {
+			glReadPixels(window_point.x(), window_point.y(), 1, 1, GL_RGBA, GL_FLOAT, &pixel);
+			for (auto p : pixel) {
+				qDebug() << p;
+			}
+		}
+	}
 }
 
 }
