@@ -37,14 +37,14 @@ void timeline_cell::set_index(uint layer_idx, playx::core::unit_frame keyframe_i
 
 void timeline_cell::initialize()
 {
-    auto component = app_state_->get_timeline().find_component(layer_idx_, keyframe_idx_);
+    auto component = app_state_->tl().find_component(layer_idx_, keyframe_idx_);
     if (component == boost::none) {
         QPalette pal = palette();
         pal.setColor(QPalette::Background, QColor(230, 230, 230));
         setPalette(pal);
         return;
     }
-    auto visibility = component->first->get_visibility_style() && app_state_->get_current_frame() == keyframe_idx_;
+    auto visibility = component->first->get_visibility_style() && app_state_->current_frame() == keyframe_idx_;
     if (visibility) {
         QPalette pal = palette();
         pal.setColor(QPalette::Background, QColor(20, 20, 20));
@@ -59,8 +59,8 @@ void timeline_cell::initialize()
 
 void timeline_cell::receive_selection_change()
 {
-    if (app_state_->get_current_frame().get_index() != keyframe_idx_.get_index()) {
-        if (app_state_->get_timeline().find_component(layer_idx_, keyframe_idx_) == boost::none) {
+    if (app_state_->current_frame().get_index() != keyframe_idx_.get_index()) {
+        if (app_state_->tl().find_component(layer_idx_, keyframe_idx_) == boost::none) {
             QPalette pal = palette();
             pal.setColor(QPalette::Background, QColor(230, 230, 230));
             setPalette(pal);
@@ -70,7 +70,7 @@ void timeline_cell::receive_selection_change()
             setPalette(pal);
         }
     } else {
-        if (app_state_->get_timeline().find_component(layer_idx_, keyframe_idx_) == boost::none) {
+        if (app_state_->tl().find_component(layer_idx_, keyframe_idx_) == boost::none) {
             QPalette pal = palette();
             pal.setColor(QPalette::Background, QColor(230, 230, 230));
             setPalette(pal);
@@ -89,8 +89,8 @@ void timeline_cell::mousePressEvent(QMouseEvent *event)
     if (event->button() != Qt::LeftButton) {
         return;
     }
-    auto component = app_state_->get_timeline().find_or_create_component(layer_idx_, keyframe_idx_, keyframe_idx_ + playx::core::unit_frame(1));
-    app_state_->set_current_frame(keyframe_idx_);
+    auto component = app_state_->tl().find_or_create_component(layer_idx_, keyframe_idx_, keyframe_idx_ + playx::core::unit_frame(1));
+    app_state_->current_frame(keyframe_idx_);
     app_state_->change_current_layer_to(layer_idx_);
 
     switchBgColor();
@@ -102,7 +102,7 @@ void timeline_cell::mousePressEvent(QMouseEvent *event)
 
 void timeline_cell::switchBgColor()
 {
-    if (keyframe_idx_ == app_state_->get_current_frame()) {
+    if (keyframe_idx_ == app_state_->current_frame()) {
         QPalette pal = palette();
         pal.setColor(QPalette::Background, QColor(20, 20, 20));
         setPalette(pal);
@@ -127,14 +127,14 @@ void timeline_widget::set_application_state(std::shared_ptr<playx::core::applica
 void timeline_widget::render_widget()
 {
     layout_ = std::make_unique<QGridLayout>();
-    for (uint i = 0; i < app_state_->get_timeline().get_all_layers().size(); i++) {
-        for (uint j = 0; j < app_state_->get_timeline().get_length().get_index(); j++) { 
+    for (uint i = 0; i < app_state_->tl().get_all_layers().size(); i++) {
+        for (uint j = 0; j < app_state_->tl().get_length().get_index(); j++) { 
             auto c = new timeline_cell();
             c->set_application_state(app_state_);
             c->set_index(i, playx::core::unit_frame(j));
             c->initialize();
             cells_.push_back(c);
-            layout_->addWidget(c, app_state_->get_timeline().get_all_layers().size() - i, j);
+            layout_->addWidget(c, app_state_->tl().get_all_layers().size() - i, j);
             connect(c, SIGNAL(notify_content_change()), this, SLOT(receiveVisibilityChange()));
         }
     }

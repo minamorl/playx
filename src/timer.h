@@ -30,10 +30,15 @@ public:
     void start() {
         timer_.async_wait(strand_.wrap(boost::bind(&timer::callback, this)));
         t_ = boost::thread(boost::bind(&boost::asio::io_service::run, &io_));
+        is_working_ = true;
+    }
+    bool is_working() noexcept {
+        return is_working_;
     }
     void stop() {
         io_.stop();
         t_.join();
+        is_working_ = false;
     }
 
 private:
@@ -45,6 +50,7 @@ private:
     boost::asio::chrono::milliseconds duration_;
     uint repeat_count_;
     uint counter_;
+    bool is_working_ = false;
 };
 
 }

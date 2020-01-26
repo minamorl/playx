@@ -32,17 +32,17 @@ void painter_field::set_application_state(std::shared_ptr<playx::core::applicati
     app_state_ = app_state;
     auto image = QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied);
     image.fill(Qt::transparent);
-    auto l = app_state->get_timeline().create_layer();
-    app_state_->get_timeline().insert_keyframe(
+    auto l = app_state->tl().create_layer();
+    app_state_->tl().insert_keyframe(
         std::make_shared<playx::core::keyframe>(image, playx::core::unit_frame(0), playx::core::unit_frame(1)), l);
 }
 
 
 void painter_field::createLayer(QImage image)
 {
-    auto l = app_state_->get_timeline().create_layer();
+    auto l = app_state_->tl().create_layer();
     app_state_->change_current_layer_to(l->get_level());
-    app_state_->get_timeline().insert_keyframe(
+    app_state_->tl().insert_keyframe(
         std::make_shared<playx::core::keyframe>(image, playx::core::unit_frame(0), playx::core::unit_frame(1)), l);
     prevent_from_drawing_ = true;
     update();
@@ -63,9 +63,9 @@ void painter_field::drawLayers()
 {
     QPainter painter(base_image_.get());
     base_image_->fill(Qt::GlobalColor::transparent);
-    for (auto &x : app_state_->get_timeline().get_all_layers()) {
+    for (auto &x : app_state_->tl().get_all_layers()) {
         if (x->get_visibility_style()) {
-            for (auto& y : app_state_->get_timeline().get_keyframes_at(app_state_->get_current_frame())) {
+            for (auto& y : app_state_->tl().get_keyframes_at(app_state_->current_frame())) {
                 if (y.first->get_level() == x->get_level()) {
                     painter.drawImage(QPoint(0, 0), y.second->get_image());
                 }
@@ -130,7 +130,7 @@ void painter_field::paintEvent(QPaintEvent*)
         drawLayers();
         return;
     }
-    auto component = app_state_->get_timeline().find_component(app_state_->current_layer()->get_level(), app_state_->get_current_frame());
+    auto component = app_state_->tl().find_component(app_state_->current_layer()->get_level(), app_state_->current_frame());
     if (component == boost::none) {
         return;
     }
@@ -145,8 +145,9 @@ void painter_field::paintEvent(QPaintEvent*)
 }
 void painter_field::start_timer()
 {
+    if (t_->is_working()) return stop_timer();
     auto l = [&](uint){
-        app_state_->set_current_frame(app_state_->get_current_frame() + playx::core::unit_frame(1));
+        app_state_->current_frame(app_state_->current_frame() + playx::core::unit_frame(1));
         update();
     };
     t_ = std::make_unique<playx::core::timer>(l, 2000, 24);

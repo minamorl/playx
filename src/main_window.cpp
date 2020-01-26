@@ -67,10 +67,8 @@ void main_window::setup()
     setCentralWidget(window.get());
 }
 
-void main_window::keyPressEvent(QKeyEvent *event)
+void main_window::keyPressEvent(QKeyEvent *)
 {
-    std::cout << "here" << std::endl;
-    qDebug() << event->key();
     boost::bind(&painter_field::start_timer, pf.get())();
 }
 
