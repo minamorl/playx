@@ -50,3 +50,5 @@ if(MSVC)
 else()
   target_compile_options(binary PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
+
+include_directories(${Boost_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS})
