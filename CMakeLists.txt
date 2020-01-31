@@ -44,6 +44,7 @@ target_link_libraries (binary Threads::Threads)
 find_package(Boost COMPONENTS thread REQUIRED)
 target_link_libraries( binary Boost::thread )
 
+target_include_directories(binary SYSTEM BEFORE PUBLIC ${Qt5Widgets_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
 if(MSVC)
   target_compile_options(binary PRIVATE /W4)
@@ -51,4 +52,3 @@ else()
   target_compile_options(binary PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
 
-include_directories(${Boost_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS})
