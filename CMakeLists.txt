@@ -9,6 +9,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(Threads REQUIRED)
 
+find_package(glm CONFIG REQUIRED)
+
 # qt
 # list(APPEND CMAKE_PREFIX_PATH ${Qt5_DIR})
 find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
@@ -43,6 +45,8 @@ target_link_libraries (binary Threads::Threads)
 
 find_package(Boost COMPONENTS thread REQUIRED)
 target_link_libraries( binary Boost::thread )
+
+target_link_libraries( binary glm )
 
 target_include_directories(binary SYSTEM BEFORE PUBLIC ${Qt5Widgets_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
