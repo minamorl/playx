@@ -5,10 +5,17 @@
 #include <QOpenGLWidget>
 #include <QMouseEvent>
 #include <QDesktopWidget>
+#include <QApplication>
+
+#include <glm/vec2.hpp> // glm::vec2
+#include <glm/vec3.hpp> // glm::vec3
+#include <glm/vec4.hpp> // glm::vec4
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <memory>
 #include <iostream>
 #include <cmath>
+#include <array>
 
 namespace playx::ui {
 
@@ -34,6 +41,7 @@ const char* colorwheel_widget::fragment_shader_ = R"(
 #version 440 core
 
 uniform vec2 resolution;
+uniform vec3 default_bg_color;
 layout(location = 0) out vec4 FragColor;
 
 const float TWO_PI = 6.28318530718;
@@ -56,7 +64,7 @@ void main() {
 	vec3 col = hsv_to_rgb(vec3(angle, 1.0, 1.0));
 	
    	if (len < 0.4 || len > 0.5)
-        FragColor = vec4(0, 0, 0, 0);
+        FragColor = vec4(default_bg_color, 0.);
     else
 		FragColor = vec4(col, 1.0);
 }
@@ -65,6 +73,7 @@ void main() {
 
 colorwheel_widget::colorwheel_widget(QWidget* parent)
 	: QOpenGLWidget(parent)
+	, parent_(parent)
 {
 	context_ = std::make_unique<QOpenGLContext>();
 
@@ -84,7 +93,7 @@ colorwheel_widget::colorwheel_widget(QWidget* parent)
 void colorwheel_widget::initializeGL()
 {
 	initializeOpenGLFunctions();
-	glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
+
 	program_ = std::make_unique<QOpenGLShaderProgram>(this);
 	program_->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader_);
 	program_->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_shader_);
@@ -108,6 +117,11 @@ void colorwheel_widget::paintGL()
 	int resolution_location = program_->uniformLocation("resolution");
 	program_->setUniformValue(resolution_location, QVector2D(width(), height()));
 
+	int default_bg_color_location = program_->uniformLocation("default_bg_color");
+	auto bg_color = QWidget::palette().color(QWidget::backgroundRole());
+	program_->setUniformValue(default_bg_color_location
+		, QVector3D(bg_color.redF(), bg_color.greenF(), bg_color.blueF()));
+
 	std::cout << resolution_location << std::endl;
 
 
@@ -127,19 +141,23 @@ void colorwheel_widget::mouseMoveEvent(QMouseEvent *event)
 		auto const width = this->width();
 		auto const height = this->height();
 
-		auto const window_point = QPoint(
-			geometry().x() + x,
-			geometry().y() + y
-		);
+		auto const window_point = QPointF {
+			event->windowPos().x(),
+			parent_->height() - event->windowPos().y(),
+		};
 		
-		float pixel[] = {0, 0, 0, 0};
+		
+		std::array<float, 4> pixel {0, 0, 0, 0};
+
+		glm::vec2 position = glm::vec2{x, y} / static_cast<float>(width);
+		glm::vec2 to_center = glm::vec2(0.5, 0.5) - position;
+		float len = glm::length(to_center);
 
 		qDebug() << window_point;
-		if (std::pow(x - width / 2, 2) + std::pow(y - height / 2, 2) <= std::pow(width / 2, 2)) {
-			glReadPixels(window_point.x(), window_point.y(), 1, 1, GL_RGBA, GL_FLOAT, &pixel);
-			for (auto p : pixel) {
-				qDebug() << p;
-			}
+		
+		if (len >= 0.4 && len <= 0.5) {
+			glReadPixels(window_point.x(), window_point.y(), 1, 1, GL_RGBA, GL_FLOAT, pixel.data());
+			
 		}
 	}
 }

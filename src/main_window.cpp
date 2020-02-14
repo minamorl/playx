@@ -36,7 +36,7 @@ void main_window::setup()
 
     sidebar_layout = std::make_unique<QVBoxLayout>();
 
-    auto cw = new colorwheel_widget();
+    auto cw = new colorwheel_widget(this);
     sidebar_layout->addWidget(cw);
 
     // buttons (temporary)

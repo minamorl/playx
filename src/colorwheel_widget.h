@@ -19,7 +19,7 @@ class colorwheel_widget : public QOpenGLWidget, protected QOpenGLFunctions {
     Q_OBJECT
 
 public:
-	colorwheel_widget(QWidget* parent = nullptr);
+	explicit colorwheel_widget(QWidget* parent = nullptr);
 
 	void initializeGL();
 	void paintGL();
@@ -35,6 +35,8 @@ private:
 	static const char* vertex_shader_;
     static const char* fragment_shader_;
 	static GLfloat const vertices_[];
+
+	const QWidget* const parent_;
 };
 
 }
