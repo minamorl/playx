@@ -2,6 +2,8 @@
 
 #define WIN32_LEAN_AND_MEAN
 
+#include "colorwheel_inside_widget.h"
+
 #include <QWidget>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
@@ -12,6 +14,7 @@
 
 #include <memory>
 #include <vector>
+#include <array>
 
 namespace playx::ui {
 
@@ -23,6 +26,9 @@ public:
 
 	void initializeGL();
 	void paintGL();
+
+signals:
+	void send_pixel_value(std::array<float, 4> pixel);
 
 protected:
 	void mouseMoveEvent(QMouseEvent *event);
@@ -37,6 +43,7 @@ private:
 	static GLfloat const vertices_[];
 
 	const QWidget* const parent_;
+	std::unique_ptr<colorwheel_inside_widget> inside_widget_;
 };
 
 }

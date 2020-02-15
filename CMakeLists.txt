@@ -31,7 +31,8 @@ add_executable( binary
     ./src/keyframe_container.cpp
     ./src/unit_frame.cpp
     ./src/brush.cpp
-    ./src/colorwheel_widget.cpp)
+    ./src/colorwheel_widget.cpp
+    ./src/colorwheel_inside_widget.cpp)
 
 set_target_properties(binary PROPERTIES AUTOMOC TRUE)
 

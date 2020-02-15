@@ -1,4 +1,5 @@
 #include "colorwheel_widget.h"
+#include "colorwheel_inside_widget.h"
 
 #include <QSurfaceFormat>
 #include <QWidget>
@@ -6,6 +7,7 @@
 #include <QMouseEvent>
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QStackedLayout>
 
 #include <glm/vec2.hpp> // glm::vec2
 #include <glm/vec3.hpp> // glm::vec3
@@ -78,7 +80,7 @@ colorwheel_widget::colorwheel_widget(QWidget* parent)
 	context_ = std::make_unique<QOpenGLContext>();
 
 	QSurfaceFormat fmt;
-	fmt.setVersion(4, 0);
+	fmt.setVersion(4, 4);
 	fmt.setProfile(QSurfaceFormat::CoreProfile);
 	QSurfaceFormat::setDefaultFormat(fmt);
 	
@@ -88,13 +90,24 @@ colorwheel_widget::colorwheel_widget(QWidget* parent)
 	
 	setFixedSize(200, 200);
 	setAutoFillBackground(false);
+
+
+	inside_widget_ = std::make_unique<colorwheel_inside_widget>();
+
+	connect(this, &colorwheel_widget::send_pixel_value, inside_widget_.get(), &colorwheel_inside_widget::receive_pixel_change);
+
+	QStackedLayout* stacked_layout = new QStackedLayout();
+	stacked_layout->addWidget(inside_widget_.get());
+
+	setLayout(stacked_layout);
+
 }
 
 void colorwheel_widget::initializeGL()
 {
 	initializeOpenGLFunctions();
 
-	program_ = std::make_unique<QOpenGLShaderProgram>(this);
+	program_ = std::make_unique<QOpenGLShaderProgram>();
 	program_->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader_);
 	program_->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_shader_);
 	program_->link();
@@ -157,7 +170,9 @@ void colorwheel_widget::mouseMoveEvent(QMouseEvent *event)
 		
 		if (len >= 0.4 && len <= 0.5) {
 			glReadPixels(window_point.x(), window_point.y(), 1, 1, GL_RGBA, GL_FLOAT, pixel.data());
-			
+			if (pixel.at(3) == 1.0) {
+				send_pixel_value(pixel);
+			}
 		}
 	}
 }
