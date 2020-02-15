@@ -78,7 +78,18 @@ colorwheel_widget::colorwheel_widget(QWidget* parent)
 	, parent_(parent)
 {
 	context_ = std::make_unique<QOpenGLContext>();
+	inside_widget_ = std::make_unique<colorwheel_inside_widget>(this);
+	setFixedSize(200, 200);
 
+	connect(this, &colorwheel_widget::send_pixel_value, inside_widget_.get(), &colorwheel_inside_widget::receive_pixel_change);
+
+	inside_widget_->move((width() - inside_widget_->width()) / 2, (height() - inside_widget_->height()) / 2);
+}
+
+void colorwheel_widget::initializeGL()
+{
+	initializeOpenGLFunctions();
+	
 	QSurfaceFormat fmt;
 	fmt.setVersion(4, 4);
 	fmt.setProfile(QSurfaceFormat::CoreProfile);
@@ -88,24 +99,7 @@ colorwheel_widget::colorwheel_widget(QWidget* parent)
 
 	setMouseTracking(true);
 	
-	setFixedSize(200, 200);
 	setAutoFillBackground(false);
-
-
-	inside_widget_ = std::make_unique<colorwheel_inside_widget>();
-
-	connect(this, &colorwheel_widget::send_pixel_value, inside_widget_.get(), &colorwheel_inside_widget::receive_pixel_change);
-
-	QStackedLayout* stacked_layout = new QStackedLayout();
-	stacked_layout->addWidget(inside_widget_.get());
-
-	setLayout(stacked_layout);
-
-}
-
-void colorwheel_widget::initializeGL()
-{
-	initializeOpenGLFunctions();
 
 	program_ = std::make_unique<QOpenGLShaderProgram>();
 	program_->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader_);

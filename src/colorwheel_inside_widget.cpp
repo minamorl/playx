@@ -22,7 +22,7 @@ colorwheel_inside_widget::colorwheel_inside_widget(QOpenGLWidget* parent)
 
 	setMouseTracking(true);
 	
-	setFixedSize(150, 150);
+	setFixedSize(110, 110);
 	setAutoFillBackground(false);
 
     selected_color_ = {0.0f, 1.0f, 0.486275f, 1.0f};
