@@ -3,3 +3,5 @@ out/
 .vs/
 c_cpp_properties.json
 CMakeSettings.json
+.vscode/
+.vscode/settings.json

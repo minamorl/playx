@@ -9,6 +9,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(Threads REQUIRED)
 
+find_package(glm CONFIG REQUIRED)
+
 # qt
 # list(APPEND CMAKE_PREFIX_PATH ${Qt5_DIR})
 find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
@@ -28,7 +30,9 @@ add_executable( binary
     ./src/keyframe.cpp
     ./src/keyframe_container.cpp
     ./src/unit_frame.cpp
-    ./src/brush.cpp)
+    ./src/brush.cpp
+    ./src/colorwheel_widget.cpp
+    ./src/colorwheel_inside_widget.cpp)
 
 set_target_properties(binary PROPERTIES AUTOMOC TRUE)
 
@@ -43,9 +47,13 @@ target_link_libraries (binary Threads::Threads)
 find_package(Boost COMPONENTS thread REQUIRED)
 target_link_libraries( binary Boost::thread )
 
+target_link_libraries( binary glm )
+
+target_include_directories(binary SYSTEM BEFORE PUBLIC ${Qt5Widgets_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
 if(MSVC)
   target_compile_options(binary PRIVATE /W4)
 else()
   target_compile_options(binary PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
+

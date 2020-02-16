@@ -32,17 +32,17 @@ void painter_field::set_application_state(std::shared_ptr<playx::core::applicati
     app_state_ = app_state;
     auto image = QImage(720, 405, QImage::Format::Format_A2BGR30_Premultiplied);
     image.fill(Qt::transparent);
-    auto l = app_state->get_timeline().create_layer();
-    app_state_->get_timeline().insert_keyframe(
+    auto l = app_state->tl().create_layer();
+    app_state_->tl().insert_keyframe(
         std::make_shared<playx::core::keyframe>(image, playx::core::unit_frame(0), playx::core::unit_frame(1)), l);
 }
 
 
 void painter_field::createLayer(QImage image)
 {
-    auto l = app_state_->get_timeline().create_layer();
+    auto l = app_state_->tl().create_layer();
     app_state_->change_current_layer_to(l->get_level());
-    app_state_->get_timeline().insert_keyframe(
+    app_state_->tl().insert_keyframe(
         std::make_shared<playx::core::keyframe>(image, playx::core::unit_frame(0), playx::core::unit_frame(1)), l);
     prevent_from_drawing_ = true;
     update();
@@ -63,9 +63,9 @@ void painter_field::drawLayers()
 {
     QPainter painter(base_image_.get());
     base_image_->fill(Qt::GlobalColor::transparent);
-    for (auto &x : app_state_->get_timeline().get_all_layers()) {
+    for (auto &x : app_state_->tl().get_all_layers()) {
         if (x->get_visibility_style()) {
-            for (auto& y : app_state_->get_timeline().get_keyframes_at(app_state_->get_current_frame())) {
+            for (auto& y : app_state_->tl().get_keyframes_at(app_state_->current_frame())) {
                 if (y.first->get_level() == x->get_level()) {
                     painter.drawImage(QPoint(0, 0), y.second->get_image());
                 }
@@ -86,23 +86,21 @@ void painter_field::interpolate(QPainter& p)
     auto const x_diff = point_.x() - previous_point_.x();
     auto const y_diff = point_.y() - previous_point_.y();
 
-    playx::tools::brush brush(p, 4);
+    playx::tools::brush brush(p, app_state_->brush_state());
 
-
-    if (std::abs(x_diff) < 1 && std::abs(y_diff) > 1) {
+    if (std::abs(x_diff) < 1 && std::abs(y_diff) >= 1) {
         auto const y_unit = y_diff / std::abs(y_diff);
         for (int i = 0; std::abs(i) < std::abs(y_diff); i += y_unit) {
             brush.paint(QPointF(point_.x(), y + i));
         }
         return;
-    } else if (std::abs(y_diff) < 1 && std::abs(x_diff) > 1) {
+    } else if (std::abs(y_diff) < 1 && std::abs(x_diff) >= 1) {
         auto const x_unit = x_diff / std::abs(x_diff);
         for (int i = 0; std::abs(i) < std::abs(x_diff); i += x_unit) {
             brush.paint(QPointF(x + i, point_.y()));
         }
         return;
-    } else if (std::abs(x_diff) < 1 || std::abs(y_diff) < 1) {
-        // nothing to do.
+    } else if (std::abs(x_diff) == 0 || std::abs(y_diff) == 0) {
         return;
     } else {
         auto const x_unit = x_diff / std::abs(x_diff);
@@ -132,22 +130,24 @@ void painter_field::paintEvent(QPaintEvent*)
         drawLayers();
         return;
     }
-    auto component = app_state_->get_timeline().find_component(app_state_->current_layer()->get_level(), app_state_->get_current_frame());
+    auto component = app_state_->tl().find_component(app_state_->current_layer()->get_level(), app_state_->current_frame());
     if (component == boost::none) {
         return;
     }
     auto& image = component->second->get_image();
     QPainter p(&image);
-    playx::tools::brush brush(p, 4);
+    playx::tools::brush brush(p, app_state_->brush_state());
     interpolate(p);
     brush.paint(point_);
     p.end();
     drawLayers();
+    previous_point_ = point_;
 }
 void painter_field::start_timer()
 {
+    if (t_->is_working()) return stop_timer();
     auto l = [&](uint){
-        app_state_->set_current_frame(app_state_->get_current_frame() + playx::core::unit_frame(1));
+        app_state_->current_frame(app_state_->current_frame() + playx::core::unit_frame(1));
         update();
     };
     t_ = std::make_unique<playx::core::timer>(l, 2000, 24);
@@ -161,7 +161,6 @@ void painter_field::stop_timer()
 }
 void painter_field::mouseMoveEvent(QMouseEvent *event)
 {
-    previous_point_ = point_;
     point_ = event->pos();
     update();
 }

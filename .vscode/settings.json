@@ -1,8 +1,4 @@
 {
-    "clang.cxxflags": [
-        "-std=c++17",
-        "-I${workspaceRoot}/libs/hana/include",
-    ],
     "files.associations": {
         "qtgui": "cpp",
         "qhboxlayout": "cpp",
@@ -76,7 +72,32 @@
         "valarray": "cpp",
         "*.ipp": "cpp",
         "codecvt": "cpp",
-        "csignal": "cpp"
+        "csignal": "cpp",
+        "qdesktopwidget": "cpp",
+        "xlocmon": "cpp",
+        "xtr1common": "cpp",
+        "concepts": "cpp",
+        "resumable": "cpp",
+        "ios": "cpp",
+        "locale": "cpp",
+        "shared_mutex": "cpp",
+        "xfacet": "cpp",
+        "xhash": "cpp",
+        "xiosbase": "cpp",
+        "xlocale": "cpp",
+        "xlocbuf": "cpp",
+        "xlocinfo": "cpp",
+        "xlocmes": "cpp",
+        "xlocnum": "cpp",
+        "xloctime": "cpp",
+        "xmemory": "cpp",
+        "xstddef": "cpp",
+        "xstring": "cpp",
+        "xtree": "cpp",
+        "xutility": "cpp",
+        "stack": "cpp",
+        "qopenglfunctions": "cpp",
+        "qopenglwidget": "cpp"
     },
     "files.watcherExclude": {
         "**/.git/objects/**": true,
@@ -84,5 +105,6 @@
         "**/node_modules/**": true,
         "**/libs/**": true,
         "**/build/**": true,
-    }
+    },
+    "cmake.configureOnOpen": true
 }
