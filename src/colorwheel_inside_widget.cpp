@@ -31,7 +31,7 @@ void colorwheel_inside_widget::initializeGL()
 	fmt.setVersion(4, 4);
 	fmt.setProfile(QSurfaceFormat::CoreProfile);
 	QSurfaceFormat::setDefaultFormat(fmt);
-	
+
 	program_ = std::make_unique<QOpenGLShaderProgram>();
 	program_->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader_);
 	program_->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_shader_);
@@ -69,6 +69,32 @@ void colorwheel_inside_widget::paintGL()
 	program_->disableAttributeArray(vertex_location);
 	
 	program_->release();
+}
+
+void colorwheel_inside_widget::mouseMoveEvent(QMouseEvent *event)
+{
+    if(event->buttons() == Qt::LeftButton) {
+		auto const x = event->x();
+		auto const y = event->y();
+
+		auto const width = this->width();
+		auto const height = this->height();
+
+		auto const window_point = QPointF {
+			event->windowPos().x(),
+			this->parentWidget()->parentWidget()->height() - event->windowPos().y(),
+		};
+		
+		
+		std::array<float, 4> pixel {0, 0, 0, 0};
+
+		glReadPixels(window_point.x(), window_point.y(), 1, 1, GL_RGBA, GL_FLOAT, pixel.data());
+
+		if (pixel.at(3) == 1.0) {
+			app_state_->brush_state().color(pixel);
+		}
+
+	}
 }
 
 void colorwheel_inside_widget::receive_pixel_change(std::array<float, 4> pixel) {

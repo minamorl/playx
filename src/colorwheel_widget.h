@@ -23,7 +23,7 @@ class colorwheel_widget : public QOpenGLWidget, protected QOpenGLFunctions {
 
 public:
 	explicit colorwheel_widget(QWidget* parent = nullptr);
-
+	void applicaiton_state(std::shared_ptr<playx::core::application_state> state) { app_state_ = state; inside_widget_->applicaiton_state(app_state_); }
 	void initializeGL();
 	void paintGL();
 
@@ -37,6 +37,8 @@ private:
 	QOpenGLVertexArrayObject object_;
 	std::unique_ptr<QOpenGLShaderProgram> program_;
 	std::unique_ptr<QOpenGLContext> context_;
+
+	std::shared_ptr<playx::core::application_state> app_state_;
 
 	static const char* vertex_shader_;
     static const char* fragment_shader_;

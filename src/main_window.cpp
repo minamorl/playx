@@ -20,9 +20,11 @@ main_window::main_window(QWidget *parent) :
 
 void main_window::setup()
 {
-    app_state = std::make_shared<playx::core::application_state>(
-        playx::core::timeline(playx::core::unit_frame(24)));
     window = std::make_unique<QWidget>();
+    
+    app_state = std::make_shared<playx::core::application_state>(
+        playx::core::timeline(playx::core::unit_frame(24))
+        , playx::tools::brush_state(4, std::array<float, 4> {0.0f, 0.0f, 0.0f, 0.0f}));
     
     layout = std::make_unique<QGridLayout>();
     pf = std::make_unique<painter_field>();
@@ -37,6 +39,7 @@ void main_window::setup()
     sidebar_layout = std::make_unique<QVBoxLayout>();
 
     auto cw = new colorwheel_widget(this);
+    cw->applicaiton_state(app_state);
     sidebar_layout->addWidget(cw);
 
     // buttons (temporary)

@@ -79,6 +79,7 @@ colorwheel_widget::colorwheel_widget(QWidget* parent)
 {
 	context_ = std::make_unique<QOpenGLContext>();
 	inside_widget_ = std::make_unique<colorwheel_inside_widget>(this);
+	
 	setFixedSize(200, 200);
 
 	connect(this, &colorwheel_widget::send_pixel_value, inside_widget_.get(), &colorwheel_inside_widget::receive_pixel_change);
@@ -151,7 +152,7 @@ void colorwheel_widget::mouseMoveEvent(QMouseEvent *event)
 
 		auto const window_point = QPointF {
 			event->windowPos().x(),
-			parent_->height() - event->windowPos().y(),
+			this->parentWidget()->height() - event->windowPos().y(),
 		};
 		
 		

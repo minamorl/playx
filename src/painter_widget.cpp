@@ -86,7 +86,7 @@ void painter_field::interpolate(QPainter& p)
     auto const x_diff = point_.x() - previous_point_.x();
     auto const y_diff = point_.y() - previous_point_.y();
 
-    playx::tools::brush brush(p, 4);
+    playx::tools::brush brush(p, app_state_->brush_state());
 
     if (std::abs(x_diff) < 1 && std::abs(y_diff) >= 1) {
         auto const y_unit = y_diff / std::abs(y_diff);
@@ -136,7 +136,7 @@ void painter_field::paintEvent(QPaintEvent*)
     }
     auto& image = component->second->get_image();
     QPainter p(&image);
-    playx::tools::brush brush(p, 4);
+    playx::tools::brush brush(p, app_state_->brush_state());
     interpolate(p);
     brush.paint(point_);
     p.end();

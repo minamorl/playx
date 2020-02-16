@@ -2,6 +2,8 @@
 
 #define WIN32_LEAN_AND_MEAN
 
+#include "application_state.h"
+
 #include <QWidget>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
@@ -9,6 +11,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
+#include <QMouseEvent>
 
 #include <array>
 
@@ -21,11 +24,18 @@ class colorwheel_inside_widget : public QOpenGLWidget, protected QOpenGLFunction
 public:
 	explicit colorwheel_inside_widget(QOpenGLWidget* parent = nullptr);
 
+	void applicaiton_state(std::shared_ptr<playx::core::application_state> state) { app_state_ = state; }
+
 	void initializeGL();
 	void paintGL();
 public slots:
     void receive_pixel_change(std::array<float, 4> pixel);
+protected:
+	void mouseMoveEvent(QMouseEvent *event);
+
 private:
+	std::shared_ptr<playx::core::application_state> app_state_;
+	
     QOpenGLVertexArrayObject object_;
 	std::unique_ptr<QOpenGLShaderProgram> program_;
     const QWidget* const parent_;
