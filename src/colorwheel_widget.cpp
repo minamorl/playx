@@ -83,6 +83,7 @@ colorwheel_widget::colorwheel_widget(QWidget* parent)
 
 	connect(this, &colorwheel_widget::send_pixel_value, inside_widget_.get(), &colorwheel_inside_widget::receive_pixel_change);
 
+	// centering inside_widget_
 	inside_widget_->move((width() - inside_widget_->width()) / 2, (height() - inside_widget_->height()) / 2);
 }
 

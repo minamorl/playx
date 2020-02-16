@@ -14,12 +14,6 @@ colorwheel_inside_widget::colorwheel_inside_widget(QOpenGLWidget* parent)
 	, parent_(parent)
 {
 
-	QSurfaceFormat fmt;
-	fmt.setVersion(4, 4);
-	fmt.setProfile(QSurfaceFormat::CoreProfile);
-	QSurfaceFormat::setDefaultFormat(fmt);
-	
-
 	setMouseTracking(true);
 	
 	setFixedSize(110, 110);
@@ -33,6 +27,11 @@ void colorwheel_inside_widget::initializeGL()
 {
 	initializeOpenGLFunctions();
 
+	QSurfaceFormat fmt;
+	fmt.setVersion(4, 4);
+	fmt.setProfile(QSurfaceFormat::CoreProfile);
+	QSurfaceFormat::setDefaultFormat(fmt);
+	
 	program_ = std::make_unique<QOpenGLShaderProgram>();
 	program_->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader_);
 	program_->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_shader_);
