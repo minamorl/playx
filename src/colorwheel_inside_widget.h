@@ -3,6 +3,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "application_state.h"
+#include "color_picker.h"
 
 #include <QWidget>
 #include <QOpenGLWidget>
@@ -43,6 +44,8 @@ private:
     std::array<float, 4> selected_color_;
 
 	static GLfloat const vertices_[];
+
+	playx::core::color_picker picker_;
 
     const char* vertex_shader_ =  R"(
 #version 440 core

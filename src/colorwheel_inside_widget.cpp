@@ -12,6 +12,7 @@ const GLfloat colorwheel_inside_widget::vertices_[] = {
 colorwheel_inside_widget::colorwheel_inside_widget(QOpenGLWidget* parent)
 	: QOpenGLWidget(parent)
 	, parent_(parent)
+	, picker_(playx::core::color_picker(110, 110))
 {
 
 	setMouseTracking(true);
@@ -38,6 +39,8 @@ void colorwheel_inside_widget::initializeGL()
 	program_->link();
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	
+	picker_.initialize();
 
 }
 void colorwheel_inside_widget::paintGL()
@@ -77,23 +80,9 @@ void colorwheel_inside_widget::mouseMoveEvent(QMouseEvent *event)
 		auto const x = event->x();
 		auto const y = event->y();
 
-		auto const width = this->width();
-		auto const height = this->height();
-
-		auto const window_point = QPointF {
-			event->windowPos().x(),
-			this->parentWidget()->parentWidget()->height() - event->windowPos().y(),
-		};
-		
-		
-		std::array<float, 4> pixel {0, 0, 0, 0};
-
-		glReadPixels(window_point.x(), window_point.y(), 1, 1, GL_RGBA, GL_FLOAT, pixel.data());
-
-		if (pixel.at(3) == 1.0) {
-			app_state_->brush_state().color(pixel);
-		}
-
+		makeCurrent();
+		app_state_->brush_state().color(picker_.pick(x, y));
+		doneCurrent();
 	}
 }
 

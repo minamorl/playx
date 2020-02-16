@@ -46,6 +46,8 @@ private:
 
 	const QWidget* const parent_;
 	std::unique_ptr<colorwheel_inside_widget> inside_widget_;
+
+	playx::core::color_picker picker_;
 };
 
 }

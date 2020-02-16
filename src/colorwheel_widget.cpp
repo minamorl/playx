@@ -76,6 +76,8 @@ void main() {
 colorwheel_widget::colorwheel_widget(QWidget* parent)
 	: QOpenGLWidget(parent)
 	, parent_(parent)
+	, picker_(playx::core::color_picker(200, 200))
+
 {
 	context_ = std::make_unique<QOpenGLContext>();
 	inside_widget_ = std::make_unique<colorwheel_inside_widget>(this);
@@ -108,6 +110,7 @@ void colorwheel_widget::initializeGL()
 	program_->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_shader_);
 	program_->link();
 
+	picker_.initialize();
 }
 void colorwheel_widget::paintGL()
 {
@@ -121,8 +124,6 @@ void colorwheel_widget::paintGL()
 	program_->enableAttributeArray(vertex_location);
 	program_->setAttributeArray(vertex_location, vertices_, 2);
 
-	std::cout << vertex_location << std::endl;
-
 	int resolution_location = program_->uniformLocation("resolution");
 	program_->setUniformValue(resolution_location, QVector2D(width(), height()));
 
@@ -130,8 +131,6 @@ void colorwheel_widget::paintGL()
 	auto bg_color = QWidget::palette().color(QWidget::backgroundRole());
 	program_->setUniformValue(default_bg_color_location
 		, QVector3D(bg_color.redF(), bg_color.greenF(), bg_color.blueF()));
-
-	std::cout << resolution_location << std::endl;
 
 
 	glDrawArrays(GL_QUADS, 0, 4);
@@ -150,22 +149,16 @@ void colorwheel_widget::mouseMoveEvent(QMouseEvent *event)
 		auto const width = this->width();
 		auto const height = this->height();
 
-		auto const window_point = QPointF {
-			event->windowPos().x(),
-			this->parentWidget()->height() - event->windowPos().y(),
-		};
-		
-		
-		std::array<float, 4> pixel {0, 0, 0, 0};
-
 		glm::vec2 position = glm::vec2{x, y} / static_cast<float>(width);
 		glm::vec2 to_center = glm::vec2(0.5, 0.5) - position;
 		float len = glm::length(to_center);
-
-		qDebug() << window_point;
 		
 		if (len >= 0.4 && len <= 0.5) {
-			glReadPixels(window_point.x(), window_point.y(), 1, 1, GL_RGBA, GL_FLOAT, pixel.data());
+			makeCurrent();
+			auto pixel = picker_.pick(x, y);
+			doneCurrent();
+
+			std::cout << "pixel: " << pixel[0] << " " << pixel[1] << " " << pixel[2];
 			if (pixel.at(3) == 1.0) {
 				send_pixel_value(pixel);
 			}
